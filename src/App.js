@@ -2,8 +2,14 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
-import { NavBar, Footer, Loading } from "./components";
-import { Home, Profile, ExternalApi } from "./pages";
+import NavBar from "./components/nav-bar";
+import Footer from "./components/footer";
+import Loading from "./components/loading";
+
+import Home from "./pages/home";
+import Profile from "./pages/profile";
+import ExternalApi from "./pages/external-api";
+
 import ProtectedRoute from "./auth/protected-route";
 
 import "./App.css";

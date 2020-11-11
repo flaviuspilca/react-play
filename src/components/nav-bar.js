@@ -1,14 +1,12 @@
 import React from "react";
 
 import NavButtons from "./nav-buttons";
-import LoginButton from "./login-button";
-import LogoutButton from "./logout-button";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
 
 const NavBar = () => {
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
     return (
     <div className="nav-container mb-3">
@@ -17,7 +15,20 @@ const NavBar = () => {
           <div className="navbar-brand logo" />
           <NavButtons />
             <div className="navbar-nav ml-auto">
-                {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+                <button
+                    className={isAuthenticated ? "btn btn-danger btn-block" : "btn btn-primary btn-block"}
+                    onClick={() => {
+                        if(isAuthenticated) {
+                            logout({
+                                returnTo: window.location.origin,
+                            })
+                        } else {
+                            loginWithRedirect();
+                        }
+                    }}
+                >
+                    {isAuthenticated ? "Log Out" : "Log In"}
+                </button>
             </div>
         </div>
       </nav>
