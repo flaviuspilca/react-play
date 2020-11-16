@@ -1,0 +1,35 @@
+.sidebar-container {
+  min-height: 100vh;
+  background-color: #273746;
+  padding: 0;
+
+  .list-group {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+
+  .list-group-item-custom {
+    position: relative;
+    display: block;
+    padding: .75rem 1.25rem;
+  }
+
+  .nav-link, .list-group-item-custom button, .nav-link:hover, .list-group-item-custom button:hover {
+    color: #fff;
+  }
+
+  .list-group-item-custom button:focus {
+    box-shadow: none;
+  }
+
+  .list-group-item-custom:hover {
+    background: #2E4053;
+  }
+}
