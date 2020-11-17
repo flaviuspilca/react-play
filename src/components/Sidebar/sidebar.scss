@@ -1,9 +1,7 @@
 .sidebar-container {
   min-height: 100vh;
-  background-color: #273746;
-  padding: 0;
 
-  .list-group {
+  .sidebar-list {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -11,25 +9,37 @@
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
+    background-color: #273746;
     padding-left: 0;
     margin-bottom: 0;
   }
 
-  .list-group-item-custom {
+  .sidebar-item {
     position: relative;
     display: block;
     padding: .75rem 1.25rem;
   }
 
-  .nav-link, .list-group-item-custom button, .nav-link:hover, .list-group-item-custom button:hover {
-    color: #fff;
+  .nav-link, .nav-link:hover {
+    color: #909497;
   }
 
-  .list-group-item-custom button:focus {
+  .sidebar-item button:focus {
     box-shadow: none;
   }
 
-  .list-group-item-custom:hover {
+  .sidebar-item:hover {
     background: #2E4053;
   }
+
+  .login-button{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .login-button button {
+    color: #F4D03F;
+  }
+
 }

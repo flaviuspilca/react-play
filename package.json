@@ -10,10 +10,12 @@
     "@testing-library/jest-dom": "^5.11.5",
     "@testing-library/react": "^11.1.1",
     "@testing-library/user-event": "^12.2.0",
+    "@trendmicro/react-sidenav": "^0.5.0",
     "bootstrap": "^4.5.3",
     "node-sass": "^4.14.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
+    "react-click-outside": "github:tj/react-click-outside",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
@@ -42,5 +44,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "/home"
 }

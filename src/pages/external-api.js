@@ -41,7 +41,7 @@ const ExternalApi = () => {
   };
 
   return (
-    <div className="container">
+    <div className="externalapi-page-container">
       <h1>External API</h1>
       <p>
         Use these buttons to call an external API. The protected API call has an

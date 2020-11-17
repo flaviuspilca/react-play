@@ -6,7 +6,7 @@ const Profile = () => {
   const { user } = useAuth0();
 
   return (
-    <div>
+    <div className="profile-page-container">
       <div className="row align-items-center profile-header">
         <div className="col-md-2 mb-3">
           <img
