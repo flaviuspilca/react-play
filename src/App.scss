@@ -23,13 +23,25 @@
 }
 
 body > #root > div {
-  /*
-  height: 100vh;
-  */
   background-color: #FADBD8;
 }
 
 #body-row {
+  height: 100vh;
   margin-left: 0;
   margin-right: 0;
+  display: flex;
+}
+
+.col-sm-1 {
+  flex: 0 0 64px !important;
+  max-width: 64px !important;
+
+  @media only screen and (max-width: 480px) {
+    display: none;
+  }
+}
+
+.col-sm-11 {
+  flex: 1 !important;
 }

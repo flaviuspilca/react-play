@@ -3,7 +3,7 @@ import {Route, Switch} from "react-router-dom";
 import { useHistory, useLocation } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 
-import Navbar from "./components/Navbar/navbar";
+import Navbar from "./components/Topbar/topbar";
 import Footer from "./components/Footer/footer";
 import Loading from "./components/Loading/loading";
 import Sidebar from "./components/Sidebar/sidebar";
@@ -28,12 +28,12 @@ const App = () => {
 
     return (
         <div id="wrapper">
-            <div className="row" id="body-row">
-                <div className="col-1">
+            <div id="body-row" className="row no-gutters">
+                <div className="col-sm-1">
                     <Sidebar location={location} history={history}/>
                 </div>
 
-                <div className="col-11 d-flex flex-column">
+                <div className="col-sm-11">
 
                     <Navbar />
                     <div className="container flex-grow-1">

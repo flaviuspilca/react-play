@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faHome, faUser, faSpaceShuttle, faSignOutAlt, faSignInAlt} from '@fortawesome/free-solid-svg-icons';
 import {useAuth0} from '@auth0/auth0-react';

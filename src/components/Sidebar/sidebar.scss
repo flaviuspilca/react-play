@@ -42,4 +42,8 @@
     color: #F4D03F;
   }
 
+  @media only screen and (max-width: 480px) {
+    display: none;
+  }
+
 }
