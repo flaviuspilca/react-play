@@ -1,5 +1,8 @@
 .nav-container {
+  background-color: #FADBD8;
   @media (min-width: 481px) {
-    display: none;
+    button {
+      display: none;
+    }
   }
 }

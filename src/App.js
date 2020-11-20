@@ -30,12 +30,12 @@ const App = () => {
         <div id="wrapper">
             <div id="body-row" className="row no-gutters">
                 <div className="col-sm-1">
-                    <Sidebar location={location} history={history}/>
+                    <Sidebar location={location} history={history} />
                 </div>
 
                 <div className="col-sm-11">
 
-                    <Navbar />
+                    <Navbar location={location} history={history} />
                     <div className="container flex-grow-1">
                         <Switch>
                             <Route path={["/", "/home"]} exact component={Home} />

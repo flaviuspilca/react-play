@@ -1,26 +1,45 @@
 import React from "react";
+import { useHistory } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import './topbar.scss';
+import {useAuth0} from "@auth0/auth0-react";
 
-const Topbar = () => {
+const Topbar = (props) => {
+    const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+    const history = useHistory();
+
     return (
     <div className="nav-container">
-        <Navbar bg="light" expand="lg">
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
+            <Navbar expand="lg" collapseOnSelect="true" onSelect={(selected) => {
+                if( selected !== 'log-in-out') {
+                    const navigateTo = '/' + selected;
+                    if (props.location.pathname !== navigateTo) {
+                        history.push(navigateTo);
+                    }
+                }else{
+                    if(isAuthenticated) {
+                        logout({
+                            returnTo: window.location.origin,
+                        })
+                    } else {
+                        loginWithRedirect();
+                    }
+                }
+            }}>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Nav className="ml-auto">
+                <Navbar.Text>Welcome {user.name}</Navbar.Text>
+
+            </Nav>
+            <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                 <Nav className="mr-auto">
-                    <Nav.Link href="#home">Home</Nav.Link>
-                    <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                        <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                    </NavDropdown>
+                    <Nav.Link href="#" eventKey="home">Home</Nav.Link>
+                    { isAuthenticated && <Nav.Link href="#" eventKey="external-api">External API</Nav.Link>}
+                    { isAuthenticated && <Nav.Link href="#" eventKey="profile">Profile</Nav.Link>}
                 </Nav>
-
-
             </Navbar.Collapse>
+
         </Navbar>
     </div>
   );
