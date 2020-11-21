@@ -48,7 +48,7 @@ const Sidebar = (props) => {
                     <SideNav.Nav defaultSelected="home">
                         <NavItem eventKey="home">
                             <NavIcon>
-                                <FontAwesomeIcon icon={faHome} />
+                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faHome} />
                             </NavIcon>
                             <NavText>
                                 Home
@@ -56,7 +56,7 @@ const Sidebar = (props) => {
                         </NavItem>
                         { isAuthenticated && <NavItem eventKey="external-api">
                             <NavIcon>
-                                <FontAwesomeIcon icon={faSpaceShuttle} />
+                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faSpaceShuttle} />
                             </NavIcon>
                             <NavText>
                                 External API
@@ -64,15 +64,15 @@ const Sidebar = (props) => {
                         </NavItem>}
                         { isAuthenticated && <NavItem eventKey="profile">
                             <NavIcon>
-                                <FontAwesomeIcon icon={faUser} />
+                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faUser} />
                             </NavIcon>
                             <NavText>
                                 Profile
                             </NavText>
                         </NavItem>}
-                        <NavItem eventKey="log-in-out" className="login-button">
+                        <NavItem eventKey="log-in-out" className="login-button" aria-label="sss">
                             <NavIcon>
-                                <FontAwesomeIcon icon={isAuthenticated ? faSignOutAlt : faSignInAlt} />
+                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={isAuthenticated ? faSignOutAlt : faSignInAlt} />
                             </NavIcon>
                             <NavText>
                                 {isAuthenticated ? "Log Out" : "Log In"}

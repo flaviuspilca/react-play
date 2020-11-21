@@ -36,10 +36,15 @@ body > #root > div {
 .col-sm-1 {
   flex: 0 0 64px !important;
   max-width: 64px !important;
+  display: none;
 
-  @media only screen and (max-width: 480px) {
-    display: none;
+  @media only screen and (min-width: 481px) {
+    display: block;
   }
+}
+
+.col-sm-11 {
+  max-width: 100% !important;
 }
 
 .col-sm-11 {

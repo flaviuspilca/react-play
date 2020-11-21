@@ -1,8 +1,21 @@
 .nav-container {
   background-color: #FADBD8;
+
+  .custom-nav {
+    padding: 0;
+  }
+
+  .image-logo {
+    height: 30px;
+    width: 30px;
+    background-size: contain;
+    background-image: url('../../images/play.png');
+    display: inline-block;
+  }
+
   @media (min-width: 481px) {
-    button {
-      display: none;
+    #responsive-navbar-nav, button {
+      display: none !important;
     }
   }
 }

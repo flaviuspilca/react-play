@@ -1,4 +1,5 @@
 .sidebar-container {
+  display: none;
   min-height: 100vh;
 
   .sidebar-list {
@@ -14,22 +15,8 @@
     margin-bottom: 0;
   }
 
-  .sidebar-item {
-    position: relative;
-    display: block;
-    padding: .75rem 1.25rem;
-  }
-
   .nav-link, .nav-link:hover {
     color: #909497;
-  }
-
-  .sidebar-item button:focus {
-    box-shadow: none;
-  }
-
-  .sidebar-item:hover {
-    background: #2E4053;
   }
 
   .login-button{
@@ -42,8 +29,8 @@
     color: #F4D03F;
   }
 
-  @media only screen and (max-width: 480px) {
-    display: none;
+  @media only screen and (min-width: 481px) {
+    display: block;
   }
 
 }

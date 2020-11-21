@@ -1,9 +1,8 @@
 import React from "react";
 import { useHistory } from 'react-router-dom';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import './topbar.scss';
+import { Nav, Navbar } from "react-bootstrap";
 import {useAuth0} from "@auth0/auth0-react";
+import './topbar.scss';
 
 const Topbar = (props) => {
     const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
@@ -11,7 +10,7 @@ const Topbar = (props) => {
 
     return (
     <div className="nav-container">
-            <Navbar expand="lg" collapseOnSelect="true" onSelect={(selected) => {
+        <Navbar expand="lg" collapseOnSelect="true" className="custom-nav" onSelect={(selected) => {
                 if( selected !== 'log-in-out') {
                     const navigateTo = '/' + selected;
                     if (props.location.pathname !== navigateTo) {
@@ -27,10 +26,14 @@ const Topbar = (props) => {
                     }
                 }
             }}>
+            <Navbar.Brand href="/home">
+                <span className="image-logo"></span>
+                <span>The Playground</span>
+            </Navbar.Brand>
+
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Nav className="ml-auto">
-                <Navbar.Text>Welcome {user.name}</Navbar.Text>
-
+                <Navbar.Text>Welcome {isAuthenticated && user.name}</Navbar.Text>
             </Nav>
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                 <Nav className="mr-auto">
@@ -39,7 +42,6 @@ const Topbar = (props) => {
                     { isAuthenticated && <Nav.Link href="#" eventKey="profile">Profile</Nav.Link>}
                 </Nav>
             </Navbar.Collapse>
-
         </Navbar>
     </div>
   );
