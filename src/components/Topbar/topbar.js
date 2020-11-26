@@ -1,8 +1,8 @@
 import React from "react";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import { Nav, Navbar } from "react-bootstrap";
 import {useAuth0} from "@auth0/auth0-react";
-import './topbar.scss';
+import "./topbar.scss";
 
 const Topbar = (props) => {
     const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
@@ -33,7 +33,7 @@ const Topbar = (props) => {
 
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Nav className="ml-auto">
-                <Navbar.Text>Welcome {isAuthenticated && user.name}</Navbar.Text>
+                <Navbar.Text>{isAuthenticated ? "Welcome " + user.name : "Welcome! You are not logged in"}</Navbar.Text>
             </Nav>
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                 <Nav className="mr-auto">

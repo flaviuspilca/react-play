@@ -33,6 +33,10 @@ body > #root > div {
   display: flex;
 }
 
+.container {
+  height: 100%;
+}
+
 .col-sm-1 {
   flex: 0 0 64px !important;
   max-width: 64px !important;
@@ -44,9 +48,10 @@ body > #root > div {
 }
 
 .col-sm-11 {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   max-width: 100% !important;
-}
-
-.col-sm-11 {
   flex: 1 !important;
+
 }

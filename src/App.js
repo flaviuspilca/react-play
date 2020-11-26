@@ -1,6 +1,6 @@
 import React from "react";
 import {Route, Switch} from "react-router-dom";
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
 import Navbar from "./components/Topbar/topbar";
@@ -36,13 +36,13 @@ const App = () => {
                 <div className="col-sm-11">
 
                     <Navbar location={location} history={history} />
-                    <div className="container flex-grow-1">
+                    <main role="main" className="container flex-grow-1 overflow-auto">
                         <Switch>
                             <Route path={["/", "/home"]} exact component={Home} />
                             <ProtectedRoute path="/profile" component={Profile} />
                             <ProtectedRoute path="/external-api" component={ExternalApi} />
                         </Switch>
-                    </div>
+                    </main>
                     <Footer />
                 </div>
             </div>
