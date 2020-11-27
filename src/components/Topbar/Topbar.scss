@@ -1,6 +1,11 @@
 .nav-container {
   background-color: #FADBD8;
 
+  .navbar-toggler, .navbar-toggler:focus {
+    border: none;
+    outline: none;
+  }
+
   .custom-nav {
     height: 100%;
     padding: 0;
@@ -26,9 +31,8 @@
     border-top: 1px solid #D98880;
   }
 
-  .navbar-toggler, .navbar-toggler:focus {
-    border: none;
-    outline: none;
+  .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    background: #D98880;
   }
 
   @media (min-width: 481px) {

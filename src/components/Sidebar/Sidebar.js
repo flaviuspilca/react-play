@@ -6,7 +6,7 @@ import {faHome, faUser, faSpaceShuttle, faSignOutAlt, faSignInAlt} from "@fortaw
 import {useAuth0} from "@auth0/auth0-react";
 import ClickOutside from "react-click-outside";
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
-import "./sidebar.scss";
+import "./Sidebar.scss";
 
 
 const Sidebar = (props) => {

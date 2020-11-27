@@ -4,7 +4,7 @@ import {faLink} from "@fortawesome/free-solid-svg-icons";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import "./responsivetable.scss";
+import "./ResponsiveTable.scss";
 
 const ResponsiveTable = (props) => {
 
@@ -21,14 +21,14 @@ const ResponsiveTable = (props) => {
             {
                 props.data.map(item => {
                     return(
-                        <Card>
+                        <Card key={item.id}>
                             <Card.Body>
                                 {
-                                    props.columns.map(col => {
+                                    props.columns.map((col, index) => {
                                         return(
-                                            <Row>
-                                                <Col><h6>{col.text}</h6></Col>
-                                                <Col>{col.dataField === 'url' ? buildUrlCell(item[col.dataField]) : item[col.dataField]}</Col>
+                                            <Row key={index}>
+                                                <Col className="col-4"><span className="font-weight-bold">{col.text}</span></Col>
+                                                <Col className="col-8">{col.dataField === 'url' ? buildUrlCell(item[col.dataField]) : item[col.dataField]}</Col>
                                             </Row>
                                         )
                                     })

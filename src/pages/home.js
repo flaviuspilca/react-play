@@ -12,7 +12,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
-import ResponsiveTable from "../components/ResponsiveTable/responsivetable"
+import ResponsiveTable from "../components/ResponsiveTable/ResponsiveTable"
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "./home.scss";
 
@@ -20,57 +20,54 @@ import "./home.scss";
 
 const Home = () => {
 
+    const [country, setCountry] = useState("");
+    const [apiKey, setApiKey] = useState("");
     const [theNews, setTheNews] = useState([]);
     const [filterString, setFilterString] = useState("");
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 768;
 
     const columns = [
-      {
-        dataField: 'author',
-        text: 'Author'
-      },
-      {
-        dataField: 'title',
-        text: 'Title'
-      },
-      {
-        dataField: 'publishedAt',
-        text: 'Publication date',
-        headerStyle: {width: '200px'},
-        formatter: (cell, contact) => {
-          return (
-              <div className="d-flex justify-content-between">
-                {transformDate(contact.publishedAt)}
-              </div>
-          )
+        {
+            dataField: 'title',
+            text: 'Title'
+        },
+        {
+            dataField: 'author',
+            text: 'Author',
+            headerStyle: {width: '200px'}
+        },
+        {
+            dataField: 'publishedAt',
+            text: 'Publication date',
+            headerStyle: {width: '120px'},
+            formatter: (cell, contact) => {
+                return (
+                    <div className="d-flex justify-content-between">
+                        {transformDate(contact.publishedAt)}
+                    </div>
+                )
+            }
+        },
+        {
+            dataField: 'url',
+            text: 'Url',
+            headerStyle: {width: '50px'},
+            formatter: (cell, contact) => {
+                return (
+                    <div className="d-flex justify-content-between">
+                        <a href={contact.url} target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon style={{color: '#000'}} icon={faLink} />
+                        </a>
+                    </div>
+                )
+            }
         }
-      },
-      {
-        dataField: 'url',
-        text: 'Url',
-        headerStyle: {width: '50px'},
-        formatter: (cell, contact) => {
-          return (
-              <div className="d-flex justify-content-between">
-                <a href={contact.url} target="_blank" rel="noreferrer">
-                  <FontAwesomeIcon style={{color: '#000'}} icon={faLink} />
-                </a>
-              </div>
-          )
-        }
-      }
     ];
 
     const params = {
-        country : "de",
-        apiKey : "cfc7d6168c29479ba18693c171134230"
-    };
-
-
-    const transformDate = (dateString) => {
-        const options = { year: "numeric", month: "long", day: "numeric" };
-        return new Date(dateString).toLocaleDateString(undefined, options)
+        country : "",
+        apiKey : ""
     };
 
     const paginationOptions = {
@@ -84,11 +81,17 @@ const Home = () => {
         hidePageListOnlyOnePage: true
     };
 
+    const transformDate = (dateString) => {
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        return new Date(dateString).toLocaleDateString(undefined, options)
+    };
+
     const getNews = (params) => {
         axios
             .get(FETCH_API, {params})
             .then(({data}) => {
-              setTheNews(data.articles);
+                data.articles.map((item, index) => (item["id"] = index))
+                setTheNews(data.articles);
             })
     };
 
@@ -120,6 +123,67 @@ const Home = () => {
                                 <Col><h3>Headlines today</h3></Col>
                             </Row>
                             <Row>
+                                <Col><h6>In order to get the news, please fill in the below inputs</h6></Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <InputGroup>
+                                        <FormControl
+                                            placeholder="Country"
+                                            value={country}
+                                            onKeyPress={event => {
+                                                if (event.key === "Enter") {
+                                                    //searchNewsHandler(filterString)
+                                                }
+                                            }}
+                                            onChange={(e) => {
+                                                setCountry(e.target.value)
+                                            }}
+                                        />
+                                        {country && <InputGroup.Append>
+                                            <Button
+                                                variant="light"
+                                                className="clean-form-btn"
+                                                onClick={(e) => {
+                                                    e.currentTarget.parentElement.children[0].value = '';
+                                                    setCountry('');
+                                                    //searchNewsHandler('')
+                                                }}>
+                                                <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
+                                            </Button>
+                                        </InputGroup.Append>}
+                                    </InputGroup>
+                                </Col>
+                                <Col>
+                                    <InputGroup>
+                                        <FormControl
+                                            placeholder="ApiKey"
+                                            value={apiKey}
+                                            onKeyPress={event => {
+                                                if (event.key === "Enter") {
+                                                    //searchNewsHandler(filterString)
+                                                }
+                                            }}
+                                            onChange={(e) => {
+                                                setApiKey(e.target.value)
+                                            }}
+                                        />
+                                        {apiKey && <InputGroup.Append>
+                                            <Button
+                                                variant="light"
+                                                className="clean-form-btn"
+                                                onClick={(e) => {
+                                                    e.currentTarget.parentElement.children[0].value = '';
+                                                    setApiKey('');
+                                                    //searchNewsHandler('')
+                                                }}>
+                                                <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
+                                            </Button>
+                                        </InputGroup.Append>}
+                                    </InputGroup>
+                                </Col>
+                            </Row>
+                            {params.country && params.apiKey && <Row>
                                 <Col>
                                     <InputGroup className="mt-0">
                                         <FormControl
@@ -160,11 +224,11 @@ const Home = () => {
                                         </InputGroup.Append>
                                     </InputGroup>
                                 </Col>
-                            </Row>
+                            </Row>}
                         </Card.Header>
-                        <Card.Body>
+                        {params.country && params.apiKey && <Card.Body>
                             { width > breakpoint ? <BootstrapTable
-                                keyField="publishedAt"
+                                keyField="id"
                                 bootstrap4
                                 condensed
                                 data={theNews}
@@ -178,9 +242,7 @@ const Home = () => {
                                 filterString={filterString}
                                 params={params}
                             />}
-                        </Card.Body>
-                        <Card.Footer>
-                        </Card.Footer>
+                        </Card.Body>}
                     </Card>
                 </Container>
             </section>
