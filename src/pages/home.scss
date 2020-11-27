@@ -1,7 +1,4 @@
 .home-page-container {
-  /*
-  height: 100%;
-  */
 
   ._loading_overlay_wrapper {
     height: 100%;
@@ -11,4 +8,19 @@
     height: 100%;
     overflow: auto;
   }
+  
+  .search-disabled {
+    cursor: not-allowed;
+    background: #ffffff;
+  }
+
+  input.form-control:focus {
+    box-shadow: none;
+    border: 1px solid #ced4da;
+  }
+
+  .input-group-append button {
+    border: 1px solid #ced4da;
+  }
+
 }

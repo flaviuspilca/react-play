@@ -1,6 +1,5 @@
 .nav-container {
   background-color: #FADBD8;
-  height: 50px;
 
   .custom-nav {
     height: 100%;
@@ -15,9 +14,30 @@
     display: inline-block;
   }
 
+  .navbar-brand {
+    display: none;
+  }
+
+  .navbar-nav a {
+    background: #FADBD8;
+  }
+
+  #responsive-navbar-nav {
+    border-top: 1px solid #D98880;
+  }
+
+  .navbar-toggler, .navbar-toggler:focus {
+    border: none;
+    outline: none;
+  }
+
   @media (min-width: 481px) {
     #responsive-navbar-nav, button {
       display: none !important;
+    }
+
+    .navbar-brand {
+      display: block;
     }
   }
 }

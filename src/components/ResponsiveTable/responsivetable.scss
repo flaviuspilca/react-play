@@ -1,0 +1,13 @@
+.responsive-table-container {
+  .card {
+    margin-bottom: 10px;
+  }
+
+  .row {
+    border-bottom: 1px solid #ced4da;
+  }
+
+  .card-body .row:last-child {
+    border: none;
+  }
+}

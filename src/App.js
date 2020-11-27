@@ -32,11 +32,9 @@ const App = () => {
                 <div className="col-sm-1">
                     <Sidebar location={location} history={history} />
                 </div>
-
                 <div className="col-sm-11">
-
                     <Navbar location={location} history={history} />
-                    <main role="main" className="container flex-grow-1 overflow-auto">
+                    <main role="main" className="container-fluid flex-grow-1 overflow-auto">
                         <Switch>
                             <Route path={["/", "/home"]} exact component={Home} />
                             <ProtectedRoute path="/profile" component={Profile} />

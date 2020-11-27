@@ -12,7 +12,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
-
+import ResponsiveTable from "../components/ResponsiveTable/responsivetable"
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "./home.scss";
 
@@ -21,7 +21,9 @@ import "./home.scss";
 const Home = () => {
 
     const [theNews, setTheNews] = useState([]);
-    const [filterName, setFilterName] = useState("");
+    const [filterString, setFilterString] = useState("");
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const breakpoint = 768;
 
     const columns = [
       {
@@ -34,7 +36,7 @@ const Home = () => {
       },
       {
         dataField: 'publishedAt',
-        text: 'Date of publication',
+        text: 'Publication date',
         headerStyle: {width: '200px'},
         formatter: (cell, contact) => {
           return (
@@ -61,8 +63,8 @@ const Home = () => {
     ];
 
     const params = {
-        "country" : "de",
-        "apiKey" : "cfc7d6168c29479ba18693c171134230"
+        country : "de",
+        apiKey : "cfc7d6168c29479ba18693c171134230"
     };
 
 
@@ -78,7 +80,6 @@ const Home = () => {
         firstPageText: '<<',
         nextPageText: '>',
         prePageText: '<',
-        alwaysShowAllBtns: false,
         hideSizePerPage: true,
         hidePageListOnlyOnePage: true
     };
@@ -91,76 +92,99 @@ const Home = () => {
             })
     };
 
+    const searchNews = (params) => {
+        axios
+            .get(SEARCH_API, {params})
+            .then(({data}) => {
+                setTheNews(data.articles);
+            })
+    };
+
+    const searchNewsHandler = (searchByString) => {
+        searchNews(searchByString ? {q : searchByString, country : params.country, apiKey : params.apiKey} : {country : params.country, apiKey : params.apiKey})
+    };
+
     useEffect(() => {
-        getNews(params)
+        window.addEventListener("resize", () => setWidth(window.innerWidth));
+        getNews(params);
     }, []);
 
 
-    return(<div className="home-page-container">
-
-
-
-
-        <section className="content">
-            <Container>
-                <Card>
-                    <Card.Header>
-                        <Row>
-                            <Col>
-                                <InputGroup className="mt-0">
-                                    <FormControl
-                                        placeholder="search ..."
-                                        value={filterName}
-                                        onKeyPress={event => {
-                                            if (event.key === "Enter") {
-                                                //searchContactsByFilter(filterName, filterActive, filterOrganisational)
-                                            }
-                                        }}
-                                        onChange={(e) => {
-                                            setFilterName(e.target.value)
-                                        }}
-                                    />
-                                    {filterName && <Button
-                                        variant="light"
-                                        className="clean-form-btn"
-                                        onClick={(e) => {
-                                            e.currentTarget.parentElement.children[0].value = '';
-                                            setFilterName('');
-
-                                            //searchContactsByFilter(null, filterActive, filterOrganisational)
-                                        }}>
-                                        <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
-                                    </Button>}
-                                    <InputGroup.Append>
-                                        <Button
-                                            variant="outline-secondary"
-                                            onClick={() => {
-                                                //searchContactsByFilter(filterName, filterActive, filterOrganisational)
+    return(
+        <div className="home-page-container">
+            <section className="content">
+                <Container>
+                    <Card>
+                        <Card.Header>
+                            <Row>
+                                <Col><h3>Headlines today</h3></Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <InputGroup className="mt-0">
+                                        <FormControl
+                                            placeholder="Search ..."
+                                            value={filterString}
+                                            onKeyPress={event => {
+                                                if (event.key === "Enter") {
+                                                    searchNewsHandler(filterString)
+                                                }
                                             }}
-                                        >
-                                            <FontAwesomeIcon style={{color: '#000'}} icon={faSearch} />
+                                            onChange={(e) => {
+                                                setFilterString(e.target.value)
+                                            }}
+                                        />
+                                        {filterString && <InputGroup.Append>
+                                            <Button
+                                            variant="light"
+                                            className="clean-form-btn"
+                                            onClick={(e) => {
+                                                e.currentTarget.parentElement.children[0].value = '';
+                                                setFilterString('');
+                                                searchNewsHandler('')
+                                            }}>
+                                            <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
                                         </Button>
-                                    </InputGroup.Append>
-                                </InputGroup>
-                            </Col>
-                        </Row>
-                    </Card.Header>
-                    <Card.Body>
-                        <BootstrapTable
-                            keyField="publishedAt"
-                            bootstrap4
-                            condensed
-                            data={theNews}
-                            columns={columns}
-                            pagination={paginationFactory(paginationOptions)}
-                        />
-                    </Card.Body>
-                    <Card.Footer>
-                    </Card.Footer>
-                </Card>
-            </Container>
-        </section>
-    </div>)
+                                        </InputGroup.Append>}
+                                        <InputGroup.Append>
+                                            <Button
+                                                variant="light"
+                                                disabled={!filterString}
+                                                className={!filterString ? 'search-disabled' : ''}
+                                                onClick={() => {
+                                                    searchNewsHandler(filterString)
+                                                }}
+                                            >
+                                                <FontAwesomeIcon style={{color: '#000'}} icon={faSearch} />
+                                            </Button>
+                                        </InputGroup.Append>
+                                    </InputGroup>
+                                </Col>
+                            </Row>
+                        </Card.Header>
+                        <Card.Body>
+                            { width > breakpoint ? <BootstrapTable
+                                keyField="publishedAt"
+                                bootstrap4
+                                condensed
+                                data={theNews}
+                                columns={columns}
+                                loading={true}
+                                noDataIndication={<div>Sorry! We found no data.</div>}
+                                pagination={paginationFactory(paginationOptions)}
+                            /> : <ResponsiveTable
+                                data={theNews}
+                                columns={columns}
+                                filterString={filterString}
+                                params={params}
+                            />}
+                        </Card.Body>
+                        <Card.Footer>
+                        </Card.Footer>
+                    </Card>
+                </Container>
+            </section>
+        </div>)
 };
 
 export default Home;
