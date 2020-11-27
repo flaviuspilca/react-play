@@ -65,11 +65,6 @@ const Home = () => {
         }
     ];
 
-    const params = {
-        country : "",
-        apiKey : ""
-    };
-
     const paginationOptions = {
         page: 1,
         sizePerPage: 10,
@@ -87,6 +82,7 @@ const Home = () => {
     };
 
     const getNews = (params) => {
+        setFilterString('');
         axios
             .get(FETCH_API, {params})
             .then(({data}) => {
@@ -104,12 +100,56 @@ const Home = () => {
     };
 
     const searchNewsHandler = (searchByString) => {
-        searchNews(searchByString ? {q : searchByString, country : params.country, apiKey : params.apiKey} : {country : params.country, apiKey : params.apiKey})
+        searchNews(searchByString ? {q : searchByString, country : country, apiKey : apiKey} : {country : country, apiKey : apiKey})
+    };
+
+    const CustomInput = (props) => {
+        const {field, method, placeholder, performSearch} = props;
+
+        return(
+            <InputGroup className="mt-0">
+                <FormControl
+                    placeholder={placeholder}
+                    value={field}
+                    onKeyPress={event => {
+                        if (event.key === "Enter" && performSearch) {
+                            searchNewsHandler(field)
+                        }
+                    }}
+                    onChange={(e) => {
+                        method(e.target.value);
+                    }}
+                />
+                {field && <InputGroup.Append>
+                    <Button
+                        variant="light"
+                        className="clean-form-btn"
+                        onClick={(e) => {
+                            e.currentTarget.parentElement.children[0].value = '';
+                            method('');
+                            searchNewsHandler('')
+                        }}>
+                        <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
+                    </Button>
+                </InputGroup.Append>}
+                {performSearch && <InputGroup.Append>
+                    <Button
+                        variant="light"
+                        disabled={!field}
+                        className={!field ? 'search-disabled' : ''}
+                        onClick={() => {
+                            searchNewsHandler(field)
+                        }}
+                    >
+                        <FontAwesomeIcon style={{color: '#000'}} icon={faSearch} />
+                    </Button>
+                </InputGroup.Append>}
+            </InputGroup>
+        )
     };
 
     useEffect(() => {
         window.addEventListener("resize", () => setWidth(window.innerWidth));
-        getNews(params);
     }, []);
 
 
@@ -127,106 +167,47 @@ const Home = () => {
                             </Row>
                             <Row>
                                 <Col>
-                                    <InputGroup>
-                                        <FormControl
-                                            placeholder="Country"
-                                            value={country}
-                                            onKeyPress={event => {
-                                                if (event.key === "Enter") {
-                                                    //searchNewsHandler(filterString)
-                                                }
-                                            }}
-                                            onChange={(e) => {
-                                                setCountry(e.target.value)
-                                            }}
-                                        />
-                                        {country && <InputGroup.Append>
-                                            <Button
-                                                variant="light"
-                                                className="clean-form-btn"
-                                                onClick={(e) => {
-                                                    e.currentTarget.parentElement.children[0].value = '';
-                                                    setCountry('');
-                                                    //searchNewsHandler('')
-                                                }}>
-                                                <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
-                                            </Button>
-                                        </InputGroup.Append>}
-                                    </InputGroup>
+                                    <CustomInput
+                                        performSearch={false}
+                                        placeholder="Country..."
+                                        field={country}
+                                        method={setCountry}
+                                    />
                                 </Col>
                                 <Col>
-                                    <InputGroup>
-                                        <FormControl
-                                            placeholder="ApiKey"
-                                            value={apiKey}
-                                            onKeyPress={event => {
-                                                if (event.key === "Enter") {
-                                                    //searchNewsHandler(filterString)
-                                                }
-                                            }}
-                                            onChange={(e) => {
-                                                setApiKey(e.target.value)
-                                            }}
-                                        />
-                                        {apiKey && <InputGroup.Append>
-                                            <Button
-                                                variant="light"
-                                                className="clean-form-btn"
-                                                onClick={(e) => {
-                                                    e.currentTarget.parentElement.children[0].value = '';
-                                                    setApiKey('');
-                                                    //searchNewsHandler('')
-                                                }}>
-                                                <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
-                                            </Button>
-                                        </InputGroup.Append>}
-                                    </InputGroup>
+                                    <CustomInput
+                                        performSearch={false}
+                                        placeholder="ApiKey..."
+                                        field={apiKey}
+                                        method={setApiKey}
+                                    />
                                 </Col>
                             </Row>
-                            {params.country && params.apiKey && <Row>
+                            <Row>
                                 <Col>
-                                    <InputGroup className="mt-0">
-                                        <FormControl
-                                            placeholder="Search ..."
-                                            value={filterString}
-                                            onKeyPress={event => {
-                                                if (event.key === "Enter") {
-                                                    searchNewsHandler(filterString)
-                                                }
-                                            }}
-                                            onChange={(e) => {
-                                                setFilterString(e.target.value)
-                                            }}
-                                        />
-                                        {filterString && <InputGroup.Append>
-                                            <Button
-                                            variant="light"
-                                            className="clean-form-btn"
-                                            onClick={(e) => {
-                                                e.currentTarget.parentElement.children[0].value = '';
-                                                setFilterString('');
-                                                searchNewsHandler('')
-                                            }}>
-                                            <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
-                                        </Button>
-                                        </InputGroup.Append>}
-                                        <InputGroup.Append>
-                                            <Button
-                                                variant="light"
-                                                disabled={!filterString}
-                                                className={!filterString ? 'search-disabled' : ''}
-                                                onClick={() => {
-                                                    searchNewsHandler(filterString)
-                                                }}
-                                            >
-                                                <FontAwesomeIcon style={{color: '#000'}} icon={faSearch} />
-                                            </Button>
-                                        </InputGroup.Append>
-                                    </InputGroup>
+                                    <Button
+                                        block
+                                        variant="secondary"
+                                        disabled={!country || !apiKey}
+                                        className={!country || !apiKey ? 'custom-button search-disabled' : 'custom-button'}
+                                        onClick={() => {
+                                            getNews({country : country, apiKey : apiKey});
+                                        }}
+                                    >Get all headlines</Button>
+                                </Col>
+                            </Row>
+                            {country && apiKey && <Row>
+                                <Col>
+                                    <CustomInput
+                                        performSearch={true}
+                                        placeholder="Search..."
+                                        field={filterString}
+                                        method={setFilterString}
+                                    />
                                 </Col>
                             </Row>}
                         </Card.Header>
-                        {params.country && params.apiKey && <Card.Body>
+                        {country && apiKey && <Card.Body>
                             { width > breakpoint ? <BootstrapTable
                                 keyField="id"
                                 bootstrap4
@@ -240,7 +221,7 @@ const Home = () => {
                                 data={theNews}
                                 columns={columns}
                                 filterString={filterString}
-                                params={params}
+                                params={{country : country, apiKey : apiKey}}
                             />}
                         </Card.Body>}
                     </Card>
