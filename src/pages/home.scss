@@ -1,5 +1,7 @@
 .home-page-container {
 
+  color: #5D6D7E;
+
   ._loading_overlay_wrapper {
     height: 100%;
   }
@@ -10,7 +12,7 @@
     font-size: 12px;
   }
   
-  .search-disabled {
+  .disabled-input {
     cursor: not-allowed;
     background: #ffffff;
   }
@@ -24,9 +26,32 @@
     border: 1px solid #ced4da;
   }
 
-  .custom-button {
+  .custom-button, .btn-secondary:disabled {
     margin-top: 10px;
     margin-bottom: 10px;
+    background: #D98880;
+    border: none;
+    color: #34495E;
+  }
+
+  .btn-secondary:hover, .btn-secondary:focus {
+    background: #D98880;
+    border: none;
+    opacity: 0.5;
+  }
+
+  @media only screen and (min-width: 481px) {
+    table.table-bordered {
+      border: 1px solid #5D6D7E;
+    }
+
+    thead {
+      background: #D98880;
+    }
+
+    tr:nth-child(even) {
+      background: #F8F9F9;
+    }
   }
 
 }

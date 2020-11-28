@@ -19,12 +19,17 @@
     display: inline-block;
   }
 
+  .navbar-light .navbar-text {
+    color: #85929E;
+  }
+
   .navbar-brand {
     display: none;
   }
 
   .navbar-nav a {
     background: #FADBD8;
+    color: #85929E;
   }
 
   #responsive-navbar-nav {
@@ -40,8 +45,9 @@
       display: none !important;
     }
 
-    .navbar-brand {
+    .navbar-light .navbar-brand {
       display: block;
+      color: #85929E;
     }
   }
 }

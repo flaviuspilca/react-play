@@ -16,14 +16,91 @@ import ResponsiveTable from "../components/ResponsiveTable/ResponsiveTable"
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "./home.scss";
 
+const CustomInput = (props) => {
+    const {placeholder, field, method, name} = props;
+
+    const searchNews = (params) => {
+        axios
+            .get(SEARCH_API, {params})
+            .then(({data}) => {
+                data.articles.map((item, index) => (item["id"] = index));
+                method({
+                    country: field.country,
+                    apiKey: field.apiKey,
+                    filterString: field.filterString,
+                    searchingState: field.searchingState,
+                    theNews: data.articles
+                });
+            })
+    };
+
+    const searchNewsHandler = (searchByString) => {
+        searchNews(searchByString ? {q : searchByString, country : field.country, apiKey : field.apiKey} : {country : field.country, apiKey : field.apiKey})
+    };
+
+    return(
+        <InputGroup className="mt-0">
+            <FormControl
+                placeholder={placeholder}
+                value={field[name]}
+                disabled={name === "filterString" && !field.searchingState}
+                className={name === "filterString" && !field.searchingState ? "disabled-input" : ""}
+                onKeyPress={event => {
+                    if (event.key === "Enter" && field.filterString.length>1) {
+                        searchNewsHandler(field.filterString)
+                    }
+                }}
+                onChange={(e) => {
+                    method({
+                        country: name==="country" ? e.target.value : field.country,
+                        apiKey: name==="apiKey" ? e.target.value : field.apiKey,
+                        filterString: name==="filterString" ? e.target.value : '',
+                        searchingState: field.searchingState,
+                        theNews: field.theNews
+                    });
+                }}
+            />
+            {field[name].length>0 && <InputGroup.Append>
+                <Button
+                    variant="light"
+                    className="clean-form-btn"
+                    onClick={(e) => {
+                        e.currentTarget.parentElement.children[0].value = '';
+                        method({
+                            country: name === "country" ? '' : field.country,
+                            apiKey: name === "apiKey" ? '' : field.apiKey,
+                            filterString: '',
+                            searchingState: false,
+                            theNews: []
+                        });
+                    }}>
+                    <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
+                </Button>
+            </InputGroup.Append>}
+            {field.filterString.length>0 && name === "filterString" && <InputGroup.Append>
+                <Button
+                    variant="light"
+                    disabled={!field[name]}
+                    className={!field[name] ? 'disabled-input' : ''}
+                    onClick={() => {
+                        searchNewsHandler(field.filterString)
+                    }}
+                >
+                    <FontAwesomeIcon style={{color: '#000'}} icon={faSearch} />
+                </Button>
+            </InputGroup.Append>}
+        </InputGroup>
+    )
+};
+
+
+
+
+
 
 
 const Home = () => {
-
-    const [country, setCountry] = useState("");
-    const [apiKey, setApiKey] = useState("");
-    const [theNews, setTheNews] = useState([]);
-    const [filterString, setFilterString] = useState("");
+    const [config, setConfig] = useState({country: "", apiKey: "", filterString: "", searchingState: false, theNews: []});
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 768;
 
@@ -82,71 +159,29 @@ const Home = () => {
     };
 
     const getNews = (params) => {
-        setFilterString('');
+        setConfig({
+            country: config.country,
+            apiKey: config.apiKey,
+            filterString: "",
+            searchingState: config.searchingState,
+            theNews: []
+        });
         axios
             .get(FETCH_API, {params})
             .then(({data}) => {
-                data.articles.map((item, index) => (item["id"] = index))
-                setTheNews(data.articles);
+                data.articles.map((item, index) => (item["id"] = index));
+                setConfig({
+                    country: config.country,
+                    apiKey: config.apiKey,
+                    filterString: '',
+                    searchingState: true,
+                    theNews: data.articles
+                });
             })
     };
 
-    const searchNews = (params) => {
-        axios
-            .get(SEARCH_API, {params})
-            .then(({data}) => {
-                setTheNews(data.articles);
-            })
-    };
 
-    const searchNewsHandler = (searchByString) => {
-        searchNews(searchByString ? {q : searchByString, country : country, apiKey : apiKey} : {country : country, apiKey : apiKey})
-    };
 
-    const CustomInput = (props) => {
-        const {field, method, placeholder, performSearch} = props;
-
-        return(
-            <InputGroup className="mt-0">
-                <FormControl
-                    placeholder={placeholder}
-                    value={field}
-                    onKeyPress={event => {
-                        if (event.key === "Enter" && performSearch) {
-                            searchNewsHandler(field)
-                        }
-                    }}
-                    onChange={(e) => {
-                        method(e.target.value);
-                    }}
-                />
-                {field && <InputGroup.Append>
-                    <Button
-                        variant="light"
-                        className="clean-form-btn"
-                        onClick={(e) => {
-                            e.currentTarget.parentElement.children[0].value = '';
-                            method('');
-                            searchNewsHandler('')
-                        }}>
-                        <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
-                    </Button>
-                </InputGroup.Append>}
-                {performSearch && <InputGroup.Append>
-                    <Button
-                        variant="light"
-                        disabled={!field}
-                        className={!field ? 'search-disabled' : ''}
-                        onClick={() => {
-                            searchNewsHandler(field)
-                        }}
-                    >
-                        <FontAwesomeIcon style={{color: '#000'}} icon={faSearch} />
-                    </Button>
-                </InputGroup.Append>}
-            </InputGroup>
-        )
-    };
 
     useEffect(() => {
         window.addEventListener("resize", () => setWidth(window.innerWidth));
@@ -168,18 +203,18 @@ const Home = () => {
                             <Row>
                                 <Col>
                                     <CustomInput
-                                        performSearch={false}
                                         placeholder="Country..."
-                                        field={country}
-                                        method={setCountry}
+                                        field={config}
+                                        method={setConfig}
+                                        name={"country"}
                                     />
                                 </Col>
                                 <Col>
                                     <CustomInput
-                                        performSearch={false}
                                         placeholder="ApiKey..."
-                                        field={apiKey}
-                                        method={setApiKey}
+                                        field={config}
+                                        method={setConfig}
+                                        name={"apiKey"}
                                     />
                                 </Col>
                             </Row>
@@ -188,40 +223,40 @@ const Home = () => {
                                     <Button
                                         block
                                         variant="secondary"
-                                        disabled={!country || !apiKey}
-                                        className={!country || !apiKey ? 'custom-button search-disabled' : 'custom-button'}
+                                        disabled={!config.country || !config.apiKey}
+                                        className={!config.country || !config.apiKey ? 'custom-button disabled-input' : 'custom-button'}
                                         onClick={() => {
-                                            getNews({country : country, apiKey : apiKey});
+                                            getNews({country : config.country, apiKey : config.apiKey});
                                         }}
                                     >Get all headlines</Button>
                                 </Col>
                             </Row>
-                            {country && apiKey && <Row>
+                            <Row>
                                 <Col>
                                     <CustomInput
-                                        performSearch={true}
-                                        placeholder="Search..."
-                                        field={filterString}
-                                        method={setFilterString}
+                                        placeholder="Search for headlines..."
+                                        field={config}
+                                        method={setConfig}
+                                        name={"filterString"}
                                     />
                                 </Col>
-                            </Row>}
+                            </Row>
                         </Card.Header>
-                        {country && apiKey && <Card.Body>
+                        {config.searchingState && <Card.Body>
                             { width > breakpoint ? <BootstrapTable
                                 keyField="id"
                                 bootstrap4
                                 condensed
-                                data={theNews}
+                                data={config.theNews}
                                 columns={columns}
                                 loading={true}
                                 noDataIndication={<div>Sorry! We found no data.</div>}
                                 pagination={paginationFactory(paginationOptions)}
                             /> : <ResponsiveTable
-                                data={theNews}
+                                data={config.theNews}
                                 columns={columns}
-                                filterString={filterString}
-                                params={{country : country, apiKey : apiKey}}
+                                filterString={config.filterString}
+                                params={{country : config.country, apiKey : config.apiKey}}
                             />}
                         </Card.Body>}
                     </Card>
