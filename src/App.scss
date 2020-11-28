@@ -37,6 +37,14 @@ body > #root > div {
   height: 100%;
 }
 
+.loading-container {
+  height: 100vh;
+
+  .spinner-border {
+
+  }
+}
+
 .col-sm-1 {
   flex: 0 0 64px !important;
   max-width: 64px !important;

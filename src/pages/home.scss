@@ -11,6 +11,10 @@
     overflow: auto;
     font-size: 12px;
   }
+
+  .react-bootstrap-table a {
+    margin: auto;
+  }
   
   .disabled-input {
     cursor: not-allowed;
@@ -51,6 +55,18 @@
 
     tr:nth-child(even) {
       background: #F8F9F9;
+    }
+
+    .page-item .page-link {
+      background: #FDEDEC;
+      color: #5D6D7E;
+      border: none;
+    }
+
+    .page-item.active .page-link {
+      background: #D98880;
+      color: #5D6D7E;
+      border: none;
     }
   }
 

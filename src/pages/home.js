@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faLink, faTimes, faSearch} from "@fortawesome/free-solid-svg-icons";
+import {faLink, faTimes, faSearch, faEye} from "@fortawesome/free-solid-svg-icons";
 import {FETCH_API, SEARCH_API} from "../core/api";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import Container from "react-bootstrap/Container";
@@ -70,7 +70,7 @@ const CustomInput = (props) => {
                             country: name === "country" ? '' : field.country,
                             apiKey: name === "apiKey" ? '' : field.apiKey,
                             filterString: '',
-                            searchingState: false,
+                            searchingState: name === "filterString" ? field.searchingState: false,
                             theNews: []
                         });
                     }}>
@@ -92,12 +92,6 @@ const CustomInput = (props) => {
         </InputGroup>
     )
 };
-
-
-
-
-
-
 
 const Home = () => {
     const [config, setConfig] = useState({country: "", apiKey: "", filterString: "", searchingState: false, theNews: []});
@@ -122,6 +116,20 @@ const Home = () => {
                 return (
                     <div className="d-flex justify-content-between">
                         {transformDate(contact.publishedAt)}
+                    </div>
+                )
+            }
+        },
+        {
+            dataField: 'view',
+            text: 'Quick preview',
+            headerStyle: {width: '100px'},
+            formatter: () => {
+                return (
+                    <div className="d-flex justify-content-between">
+                        <a href="#" target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon style={{color: '#000'}} icon={faEye} />
+                        </a>
                     </div>
                 )
             }
@@ -180,9 +188,6 @@ const Home = () => {
             })
     };
 
-
-
-
     useEffect(() => {
         window.addEventListener("resize", () => setWidth(window.innerWidth));
     }, []);
@@ -201,7 +206,7 @@ const Home = () => {
                                 <Col><h6>In order to get the news, please fill in the below inputs</h6></Col>
                             </Row>
                             <Row>
-                                <Col>
+                                <Col md={6}>
                                     <CustomInput
                                         placeholder="Country..."
                                         field={config}
@@ -209,7 +214,7 @@ const Home = () => {
                                         name={"country"}
                                     />
                                 </Col>
-                                <Col>
+                                <Col md={6}>
                                     <CustomInput
                                         placeholder="ApiKey..."
                                         field={config}
@@ -225,13 +230,14 @@ const Home = () => {
                                         variant="secondary"
                                         disabled={!config.country || !config.apiKey}
                                         className={!config.country || !config.apiKey ? 'custom-button disabled-input' : 'custom-button'}
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                            e.currentTarget.parentElement.children[0].blur();
                                             getNews({country : config.country, apiKey : config.apiKey});
                                         }}
                                     >Get all headlines</Button>
                                 </Col>
                             </Row>
-                            <Row>
+                            {config.searchingState && <Row>
                                 <Col>
                                     <CustomInput
                                         placeholder="Search for headlines..."
@@ -240,7 +246,7 @@ const Home = () => {
                                         name={"filterString"}
                                     />
                                 </Col>
-                            </Row>
+                            </Row>}
                         </Card.Header>
                         {config.searchingState && <Card.Body>
                             { width > breakpoint ? <BootstrapTable
