@@ -1,7 +1,7 @@
 import React from "react";
 import {Route, Switch} from "react-router-dom";
-import { useHistory, useLocation } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
+import {useHistory, useLocation} from "react-router-dom";
+import {useAuth0} from "@auth0/auth0-react";
 
 import Navbar from "./components/Topbar/Topbar";
 import Footer from "./components/Footer/Footer";
@@ -12,6 +12,7 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import Home from "./pages/home";
 import Profile from "./pages/profile";
 import ExternalApi from "./pages/external-api";
+import Error from "./pages/error";
 
 import ProtectedRoute from "./auth/protected-route";
 
@@ -39,6 +40,7 @@ const App = () => {
                             <Route path={["/", "/home"]} exact component={Home} />
                             <ProtectedRoute path="/profile" component={Profile} />
                             <ProtectedRoute path="/external-api" component={ExternalApi} />
+                            <Route path="/error" exact component={Error} />
                         </Switch>
                     </main>
                     <Footer />

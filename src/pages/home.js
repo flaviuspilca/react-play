@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faTimes, faSearch, faEye} from "@fortawesome/free-solid-svg-icons";
 import {FETCH_API, SEARCH_API} from "../core/api";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -12,7 +12,8 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
-import ResponsiveTable from "../components/ResponsiveTable/ResponsiveTable"
+import ResponsiveTable from "../components/ResponsiveTable/ResponsiveTable";
+import Error from "./error";
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import "./home.scss";
 
@@ -51,6 +52,9 @@ const CustomInput = (props) => {
                     }
                 }}
                 onChange={(e) => {
+                    if( e.currentTarget.value.charAt(0) === ' ' ){
+                        e.target.value = e.target.value.trim();
+                    }
                     method({
                         country: name==="country" ? e.target.value : field.country,
                         apiKey: name==="apiKey" ? e.target.value : field.apiKey,
@@ -95,6 +99,7 @@ const CustomInput = (props) => {
 
 const Home = () => {
     const [config, setConfig] = useState({country: "", apiKey: "", filterString: "", searchingState: false, theNews: []});
+    const [hasError, setHasError] = useState(false);
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 768;
 
@@ -186,6 +191,9 @@ const Home = () => {
                     theNews: data.articles
                 });
             })
+            .catch(error => {
+                setHasError(true);
+            })
     };
 
     useEffect(() => {
@@ -195,7 +203,7 @@ const Home = () => {
 
     return(
         <div className="home-page-container">
-            <section className="content">
+            {!hasError && <section className="content">
                 <Container>
                     <Card>
                         <Card.Header>
@@ -229,10 +237,17 @@ const Home = () => {
                                         block
                                         variant="secondary"
                                         disabled={!config.country || !config.apiKey}
-                                        className={!config.country || !config.apiKey ? 'custom-button disabled-input' : 'custom-button'}
+                                        className={!config.country || !config.apiKey ? 'custom-button' : 'custom-button'}
                                         onClick={(e) => {
-                                            e.currentTarget.parentElement.children[0].blur();
-                                            getNews({country : config.country, apiKey : config.apiKey});
+                                            try {
+                                                if( !config.country || !config.apiKey ){
+                                                    throw new Error("Please provide country and api key.");
+                                                }
+                                                e.currentTarget.parentElement.children[0].blur();
+                                                getNews({country : config.country, apiKey : config.apiKey});
+                                            } catch {
+                                                setHasError(true);
+                                            }
                                         }}
                                     >Get all headlines</Button>
                                 </Col>
@@ -256,7 +271,6 @@ const Home = () => {
                                 data={config.theNews}
                                 columns={columns}
                                 loading={true}
-                                noDataIndication={<div>Sorry! We found no data.</div>}
                                 pagination={paginationFactory(paginationOptions)}
                             /> : <ResponsiveTable
                                 data={config.theNews}
@@ -267,7 +281,8 @@ const Home = () => {
                         </Card.Body>}
                     </Card>
                 </Container>
-            </section>
+            </section>}
+            {hasError && <Error/>}
         </div>)
 };
 

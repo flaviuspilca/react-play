@@ -1,6 +1,6 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
-import { Nav, Navbar } from "react-bootstrap";
+import {useHistory} from "react-router-dom";
+import {Nav, Navbar} from "react-bootstrap";
 import {useAuth0} from "@auth0/auth0-react";
 import "./Topbar.scss";
 

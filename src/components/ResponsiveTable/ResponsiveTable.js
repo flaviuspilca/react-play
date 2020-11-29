@@ -1,5 +1,5 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
