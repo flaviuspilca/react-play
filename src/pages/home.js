@@ -36,11 +36,11 @@ const NewsFullView = (props) => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <h4>by {props.data.author}</h4>
                 <p>{props.data.content}</p>
+                <span className="text-left font-italic">by: {props.data.author}</span>
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={props.onHide}>Close</Button>
+                <Button size={"sm"} onClick={props.onHide}>Close</Button>
             </Modal.Footer>
         </Modal>
     );
