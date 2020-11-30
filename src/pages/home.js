@@ -37,7 +37,7 @@ const NewsFullView = (props) => {
             </Modal.Header>
             <Modal.Body>
                 <p>{props.data.content}</p>
-                <span className="text-left font-italic">by: {props.data.author}</span>
+                <span className="text-left font-italic">by: {props.data.author ? props.data.author : "unknown author"}</span>
             </Modal.Body>
             <Modal.Footer>
                 <Button size={"sm"} onClick={props.onHide}>Close</Button>
