@@ -45,7 +45,7 @@ const Sidebar = (props) => {
                     className="sidebar-list"
                 >
                     <SideNav.Toggle />
-                    <SideNav.Nav defaultSelected="home">
+                    <SideNav.Nav defaultSelected={props.location.pathname.toString().substring(1)}>
                         <NavItem eventKey="home">
                             <NavIcon>
                                 <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faHome} />

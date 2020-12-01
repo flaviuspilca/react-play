@@ -324,7 +324,7 @@ const Home = () => {
                     </Card>
                 </Container>
             </section>}
-            {hasError && <Error/>}
+            {hasError && <Error origin="home"/>}
 
             {config.theNews.length > 0 && <NewsFullView
                 index={index}

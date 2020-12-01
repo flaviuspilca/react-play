@@ -6,7 +6,8 @@ import Col from "react-bootstrap/Col";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 
-const Error = () => {
+const Error = (props) => {
+    const backTo = "/"+props.origin;
 
     return(
         <div className="error-component-container">
@@ -29,7 +30,7 @@ const Error = () => {
                             </Row>
                             <Row>
                                 <Col sm={3}>
-                                    <a href="/home" className="text-decoration-none text-muted">
+                                    <a href={backTo} className="text-decoration-none text-muted">
                                         <FontAwesomeIcon style={{color: '#000'}} icon={faArrowLeft} /> Go back
                                     </a>
                                 </Col>
