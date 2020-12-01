@@ -8,9 +8,9 @@ import Footer from "./components/Footer/Footer";
 import Loading from "./components/Loading/Loading";
 import Sidebar from "./components/Sidebar/Sidebar";
 
-import Home from "./pages/home";
-import Profile from "./pages/profile";
-import ExternalApi from "./pages/external-api";
+import Home from "./pages/Home/home";
+import Profile from "./pages/Profile/profile";
+import Mobility from "./pages/Mobility/mobility";
 
 import ProtectedRoute from "./auth/protected-route";
 
@@ -36,7 +36,7 @@ const App = () => {
                     <Switch>
                         <Route path={["/", "/home"]} exact component={Home} />
                         <ProtectedRoute path="/profile" component={Profile} />
-                        <ProtectedRoute path="/external-api" component={ExternalApi} />
+                        <ProtectedRoute path="/mobility" component={Mobility} />
                     </Switch>
                 </main>
                 <Footer />

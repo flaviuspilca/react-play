@@ -54,7 +54,7 @@ const Sidebar = (props) => {
                                 Home
                             </NavText>
                         </NavItem>
-                        { isAuthenticated && <NavItem eventKey="external-api">
+                        { isAuthenticated && <NavItem eventKey="mobility">
                             <NavIcon>
                                 <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faSpaceShuttle} />
                             </NavIcon>

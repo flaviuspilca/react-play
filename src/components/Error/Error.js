@@ -30,7 +30,7 @@ const Error = () => {
                             <Row>
                                 <Col sm={3}>
                                     <a href="/home" className="text-decoration-none text-muted">
-                                        <FontAwesomeIcon style={{color: '#000'}} icon={faArrowLeft} /> Go back<h5></h5>
+                                        <FontAwesomeIcon style={{color: '#000'}} icon={faArrowLeft} /> Go back
                                     </a>
                                 </Col>
                             </Row>

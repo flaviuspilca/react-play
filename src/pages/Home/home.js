@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import axios from "axios";
-import {FETCH_API, SEARCH_API} from "../core/api";
+import {FETCH_API, SEARCH_API} from "../../core/api";
 
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
@@ -12,8 +12,8 @@ import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Modal from 'react-bootstrap/Modal'
 
-import ResponsiveTable from "../components/ResponsiveTable/ResponsiveTable";
-import Error from "../components/Error/Error";
+import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
+import Error from "../../components/Error/Error";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faTimes, faSearch, faEye} from "@fortawesome/free-solid-svg-icons";
@@ -247,7 +247,12 @@ const Home = () => {
                                 <Col><h3>Headlines today</h3></Col>
                             </Row>
                             <Row>
-                                <Col><h6>In order to get the news, please fill in the below inputs</h6></Col>
+                                <Col>
+                                    <h6>In order to get the news, please fill in the below inputs</h6>
+                                    <p>You can use the below values:</p>
+                                    <p>Country: de</p>
+                                    <p>ApiKey: cfc7d6168c29479ba18693c171134230</p>
+                                </Col>
                             </Row>
                             <Row>
                                 <Col md={6}>
