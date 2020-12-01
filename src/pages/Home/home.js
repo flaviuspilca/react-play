@@ -276,7 +276,7 @@ const Home = () => {
                                 <Col>
                                     <Button
                                         block
-                                        variant="secondary"
+                                        variant="primary"
                                         disabled={!config.country || !config.apiKey}
                                         className={!config.country || !config.apiKey ? 'custom-button disabled-input' : 'custom-button'}
                                         onClick={(e) => {

@@ -15,11 +15,6 @@
   .react-bootstrap-table a {
     margin: auto;
   }
-  
-  .disabled-input {
-    cursor: not-allowed;
-    background: #ffffff;
-  }
 
   input.form-control:focus {
     box-shadow: none;
@@ -28,20 +23,6 @@
 
   .input-group-append button {
     border: 1px solid #ced4da;
-  }
-
-  .custom-button, .btn-secondary:disabled {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    background: #D98880;
-    border: none;
-    color: #34495E;
-  }
-
-  .btn-secondary:hover, .btn-secondary:focus {
-    background: #D98880;
-    border: none;
-    opacity: 0.5;
   }
 
   .btn-group-sm>.btn, .btn-sm {

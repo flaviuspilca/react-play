@@ -96,3 +96,26 @@ body > #root > div {
   }
 }
 
+#body-row {
+
+  .disabled-input {
+    cursor: not-allowed;
+    background: #ffffff;
+  }
+
+  .custom-button, .btn-primary:disabled {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #D98880;
+    border: none;
+    color: #34495E;
+  }
+
+  .btn-primary:hover, .btn-primary:focus {
+    background: #D98880;
+    border: none;
+    opacity: 0.5;
+  }
+}
+
+

@@ -2,3 +2,5 @@
 // because of this I went for this approach even if the two APIs are the same
 export const FETCH_API = "https://newsapi.org/v2/top-headlines";
 export const SEARCH_API = "https://newsapi.org/v2/top-headlines";
+
+export const MOBILITY_LOGIN = "https://arcane-scrubland-64110.herokuapp.com/auth/login";
