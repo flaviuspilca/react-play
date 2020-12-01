@@ -15,54 +15,30 @@ import "./mobility.scss";
 import Error from "../../components/Error/Error";
 
 const Mobility = () => {
-  const [message, setMessage] = useState("");
   const [credentials, setCredentials] = useState({email: "", password: ""});
   const [hasError, setHasError] = useState(false);
-  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  const [userToken, setUserToken] = useState("");
 
-  const callApi = async () => {
-    try {
-      const response = await fetch(`${serverUrl}/api/messages/public-message`);
+  const authHeader = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
 
-      const responseData = await response.json();
-
-      setMessage(responseData.message);
-    } catch (error) {
-      setMessage(error.message);
+    if (user && user.auth_token) {
+      setUserToken(user.auth_token);
+      return { Authorization: 'Bearer ' + user.auth_token };
+    } else {
+      return {};
     }
   };
-
-  const callSecureApi = async () => {
-    try {
-      //const token = await getAccessTokenSilently();
-
-      const response = await fetch(
-        `${serverUrl}/api/messages/protected-message`,
-        {
-          headers: {
-            //Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const responseData = await response.json();
-
-      setMessage(responseData.message);
-    } catch (error) {
-      setMessage(error.message);
-    }
-  };
-
 
   const login = (userCredentials) => {
     return axios
         .post(MOBILITY_LOGIN, userCredentials)
         .then((response) => {
-          console.log(response)
-          if (response.data.accessToken) {
+          console.log(response);
+          if (response.data.auth_token) {
             localStorage.setItem("user", JSON.stringify(response.data));
           }
-
+          authHeader();
           return response.data;
         })
         .catch(error => {
@@ -74,7 +50,7 @@ const Mobility = () => {
     <div className="mobility-page-container">
       {!hasError && <section className="content">
         <Container>
-        <Card>
+          {userToken.length === 0 && <Card>
           <Card.Header>
             <Row>
               <Col><h3>Please login first!</h3></Col>
@@ -125,7 +101,28 @@ const Mobility = () => {
               </Button>
             </Form>
           </Card.Body>
-        </Card>
+        </Card>}
+          {userToken.length > 0 && <Card>
+            <Card.Body>
+              <Row>
+                <Col>
+                  a
+                </Col>
+              </Row>
+              <Row>
+                <Button
+                    block
+                    variant="primary"
+                    className="custom-button"
+                    onClick={()=>{
+                      localStorage.removeItem("user");
+                      setUserToken("");
+                    }}
+                >Log out
+                </Button>
+              </Row>
+            </Card.Body>
+          </Card>}
       </Container>
       </section>}
       {hasError && <Error origin="mobility"/>}

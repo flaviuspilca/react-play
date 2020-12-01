@@ -1,22 +1,22 @@
 import React, {useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import axios from "axios";
-import {FETCH_API, SEARCH_API} from "../../core/api";
+import {FETCH_API} from "../../core/api";
 
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
+
 import Modal from 'react-bootstrap/Modal'
 
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
 import Error from "../../components/Error/Error";
+import CustomInput from "../../components/CustomInput/CustomInput";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faLink, faTimes, faSearch, faEye} from "@fortawesome/free-solid-svg-icons";
+import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -44,87 +44,6 @@ const NewsFullView = (props) => {
             </Modal.Footer>
         </Modal>
     );
-};
-
-const CustomInput = (props) => {
-    const {placeholder, field, method, name} = props;
-
-    const searchNews = (params) => {
-        axios
-            .get(SEARCH_API, {params})
-            .then(({data}) => {
-                data.articles.map((item, index) => (item["id"] = index));
-                method({
-                    country: field.country,
-                    apiKey: field.apiKey,
-                    filterString: params.q || '',
-                    searchingState: field.searchingState,
-                    theNews: data.articles
-                });
-            })
-    };
-
-    const searchNewsHandler = (searchByString) => {
-        searchNews(searchByString ? {q : searchByString, country : field.country, apiKey : field.apiKey} : {country : field.country, apiKey : field.apiKey})
-    };
-
-    return(
-        <InputGroup className="mt-0">
-            <FormControl
-                placeholder={placeholder}
-                value={field[name]}
-                disabled={name === "filterString" && !field.searchingState}
-                className={name === "filterString" && !field.searchingState ? "disabled-input" : ""}
-                onKeyPress={event => {
-                    if (event.key === "Enter" && field.filterString.length>1) {
-                        searchNewsHandler(field.filterString)
-                    }
-                }}
-                onChange={(e) => {
-                    if( e.currentTarget.value.charAt(0) === ' ' ){
-                        e.target.value = e.target.value.trim();
-                    }
-                    method({
-                        country: name==="country" ? e.target.value : field.country,
-                        apiKey: name==="apiKey" ? e.target.value : field.apiKey,
-                        filterString: name==="filterString" ? e.target.value : '',
-                        searchingState: field.searchingState,
-                        theNews: field.theNews
-                    });
-                }}
-            />
-            {field[name].length>0 && <InputGroup.Append>
-                <Button
-                    variant="light"
-                    className="clean-form-btn"
-                    onClick={(e) => {
-                        e.currentTarget.parentElement.children[0].value = '';
-                        method({
-                            country: name === "country" ? '' : field.country,
-                            apiKey: name === "apiKey" ? '' : field.apiKey,
-                            filterString: '',
-                            searchingState: name === "filterString" ? field.searchingState: false,
-                            theNews: []
-                        });
-                        if( name === "filterString" ) searchNewsHandler();
-                    }}>
-                    <FontAwesomeIcon style={{color: '#000'}} icon={faTimes} />
-                </Button>
-            </InputGroup.Append>}
-            {field.filterString.length>0 && name === "filterString" && <InputGroup.Append>
-                <Button
-                    variant="light"
-                    disabled={!field[name]}
-                    className={!field[name] ? 'disabled-input' : ''}
-                    onClick={() => {
-                        searchNewsHandler(field.filterString)
-                    }}
-                >
-                    <FontAwesomeIcon style={{color: '#000'}} icon={faSearch} />
-                </Button>
-            </InputGroup.Append>}
-        </InputGroup>
-    )
 };
 
 const Home = () => {
