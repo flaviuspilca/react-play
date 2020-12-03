@@ -45,7 +45,7 @@ const Sidebar = (props) => {
                     className="sidebar-list"
                 >
                     <SideNav.Toggle />
-                    <SideNav.Nav defaultSelected={props.location.pathname.toString().substring(1)}>
+                    <SideNav.Nav defaultSelected={props.location.pathname.toString().substring(1) || "home"}>
                         <NavItem eventKey="home">
                             <NavIcon>
                                 <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faHome} />
@@ -54,14 +54,14 @@ const Sidebar = (props) => {
                                 Home
                             </NavText>
                         </NavItem>
-                        { isAuthenticated && <NavItem eventKey="mobility">
+                        <NavItem eventKey="mobility">
                             <NavIcon>
                                 <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faSpaceShuttle} />
                             </NavIcon>
                             <NavText>
-                                External API
+                                Mobility
                             </NavText>
-                        </NavItem>}
+                        </NavItem>
                         { isAuthenticated && <NavItem eventKey="profile">
                             <NavIcon>
                                 <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faUser} />

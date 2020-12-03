@@ -1,12 +1,9 @@
 import React from "react";
 import axios from "axios";
 import {SEARCH_API} from "../../core/api";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
+import {InputGroup, FormControl, Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch, faTimes} from "@fortawesome/free-solid-svg-icons";
-import Button from "react-bootstrap/Button";
-
 import "./CustomInput.scss";
 
 

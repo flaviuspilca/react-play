@@ -38,7 +38,7 @@ const Topbar = (props) => {
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                 <Nav className="mr-auto">
                     <Nav.Link href="#" eventKey="home">Home</Nav.Link>
-                    { isAuthenticated && <Nav.Link href="#" eventKey="mobility">Mobility</Nav.Link>}
+                    <Nav.Link href="#" eventKey="mobility">Mobility</Nav.Link>
                     { isAuthenticated && <Nav.Link href="#" eventKey="profile">Profile</Nav.Link>}
                 </Nav>
             </Navbar.Collapse>

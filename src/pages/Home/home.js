@@ -2,24 +2,14 @@ import React, {useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import axios from "axios";
 import {FETCH_API} from "../../core/api";
-
-import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-
-import Modal from 'react-bootstrap/Modal'
-
-import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
-import Error from "../../components/Error/Error";
-import CustomInput from "../../components/CustomInput/CustomInput";
-
+import {Container, Card, Row, Col, Button, Modal} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
 import paginationFactory from 'react-bootstrap-table2-paginator';
-
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
+import Error from "../../components/Error/Error";
+import CustomInput from "../../components/CustomInput/CustomInput";
 import "./home.scss";
 
 const NewsFullView = (props) => {

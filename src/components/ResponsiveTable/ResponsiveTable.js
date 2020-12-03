@@ -1,13 +1,8 @@
 import React, {useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
-import Card from "react-bootstrap/Card";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-
+import {Card, Row, Col, Button, Modal} from "react-bootstrap";
 import "./ResponsiveTable.scss";
-import Modal from 'react-bootstrap/Modal'
 
 const NewsFullView = (props) => {
 

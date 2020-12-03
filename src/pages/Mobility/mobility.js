@@ -1,27 +1,18 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {MOBILITY_LOGIN, MOBILITY_SEARCH, MOBILITY_SEARCH_PLATE, MOBILITY_UPDATE} from "../../core/api";
-
-import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
-
-import "./mobility.scss";
-import Error from "../../components/Error/Error";
+import {Container, Card, Row, Col, Form, InputGroup, FormControl, Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch, faTimes} from "@fortawesome/free-solid-svg-icons";
 import BootstrapTable from "react-bootstrap-table-next";
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
+import Error from "../../components/Error/Error";
+import "./mobility.scss";
+
 
 const Mobility = () => {
-    const [credentials, setCredentials] = useState({email: "", password: ""});
+    const [auth, setAuth] = useState({email: "", password: "", token: ""});
     const [hasError, setHasError] = useState(false);
-    const [userToken, setUserToken] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [config, setConfig] = useState({theData: [], filterString: "", searchingState: false});
     const [width, setWidth] = useState(window.innerWidth);
@@ -67,7 +58,7 @@ const Mobility = () => {
         const user = JSON.parse(localStorage.getItem('user'));
 
         if (user && user.auth_token) {
-            setUserToken(user.auth_token);
+            setAuth({email: auth.email, password: auth.password, token: user.auth_token});
             return { Authorization: 'Bearer ' + user.auth_token };
         } else {
             return {};
@@ -167,7 +158,7 @@ const Mobility = () => {
     <div className="mobility-page-container">
       {!hasError && <section className="content">
         <Container>
-          {userToken.length === 0 && <Card>
+          {auth.token.length === 0 && <Card>
           <Card.Header>
             <Row>
               <Col><h3>Please login first!</h3></Col>
@@ -184,7 +175,7 @@ const Mobility = () => {
                         if( e.currentTarget.value.charAt(0) === ' ' ){
                           e.target.value = e.target.value.trim();
                         }
-                        setCredentials({email: e.currentTarget.value, password: credentials.password});
+                        setAuth({email: e.currentTarget.value, password: auth.password, token: auth.token});
                       }}
                   />
                 </InputGroup>
@@ -199,7 +190,7 @@ const Mobility = () => {
                         if( e.currentTarget.value.charAt(0) === ' ' ){
                           e.target.value = e.target.value.trim();
                         }
-                        setCredentials({email: credentials.email, password: e.currentTarget.value});
+                        setAuth({email: auth.email, password: e.currentTarget.value, token: auth.token});
                       }}
                   />
                 </InputGroup>
@@ -208,17 +199,17 @@ const Mobility = () => {
               <Button
                   block
                   variant="primary"
-                  disabled={credentials.email.length === 0 || credentials.password.length === 0}
-                  className={credentials.email.length === 0 || credentials.password.length === 0 ? 'custom-button disabled-input' : 'custom-button'}
+                  disabled={auth.email.length === 0 || auth.password.length === 0}
+                  className={auth.email.length === 0 || auth.password.length === 0 ? 'custom-button disabled-input' : 'custom-button'}
                   onClick={()=>{
-                    login(credentials);
+                    login(auth);
                   }}
-              >Submit
+              >Log in
               </Button>
             </Form>
           </Card.Body>
         </Card>}
-          {userToken.length > 0 && <Card>
+          {auth.token.length > 0 && <Card>
             <Card.Header>
                 <h5>Search feature: please provide the licenseplate in order to perform the search.</h5>
                 <p>For example, you can search by: XXAAXX, RF661H, NL706S, WNVP76</p>
@@ -297,9 +288,9 @@ const Mobility = () => {
                     variant="primary"
                     className="custom-button"
                     onClick={()=>{
-                      setCredentials({email: "", password: ""});
+                      setAuth({email: "", password: "", token: auth.token});
                       localStorage.removeItem("user");
-                      setUserToken("");
+                      setAuth({email: auth.email, password: auth.password, token: ""});
                     }}
                 >Log out
                 </Button>

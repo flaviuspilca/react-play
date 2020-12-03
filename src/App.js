@@ -1,19 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {Route, Switch} from "react-router-dom";
-import {useHistory, useLocation} from "react-router-dom";
+import React from "react";
+import {Route, Switch, useHistory, useLocation} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
-
 import Navbar from "./components/Topbar/Topbar";
 import Footer from "./components/Footer/Footer";
 import Loading from "./components/Loading/Loading";
 import Sidebar from "./components/Sidebar/Sidebar";
-
 import Home from "./pages/Home/home";
 import Profile from "./pages/Profile/profile";
 import Mobility from "./pages/Mobility/mobility";
-
 import ProtectedRoute from "./auth/protected-route";
-
 import "./App.scss";
 
 const App = () => {
@@ -36,7 +31,7 @@ const App = () => {
                     <Switch>
                         <Route path={["/", "/home"]} exact component={Home} />
                         <ProtectedRoute path="/profile" component={Profile} />
-                        <ProtectedRoute path="/mobility" component={Mobility} />
+                        <Route path="/mobility" component={Mobility} />
                     </Switch>
                 </main>
                 <Footer />
