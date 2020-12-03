@@ -6,4 +6,30 @@
     width: 100px;
   }
 
+  .react-bootstrap-table {
+    margin-top: 30px;
+    height: 100%;
+    overflow: auto;
+    font-size: 12px;
+  }
+
+  input.form-control:focus {
+    box-shadow: none;
+    border: 1px solid #ced4da;
+  }
+
+  .input-group-append button {
+    border: 1px solid #ced4da;
+  }
+
+  @media only screen and (min-width: 481px) {
+    table.table-bordered {
+      border: 1px solid #5D6D7E;
+    }
+
+    thead {
+      background: #D98880;
+    }
+  }
+
 }
