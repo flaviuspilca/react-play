@@ -3,7 +3,7 @@ import axios from "axios";
 import {MOBILITY_LOGIN, MOBILITY_SEARCH, MOBILITY_SEARCH_PLATE, MOBILITY_UPDATE} from "../../core/api";
 import {Container, Card, Row, Col, Form, InputGroup, FormControl, Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch, faTimes} from "@fortawesome/free-solid-svg-icons";
+import {faLink, faSearch, faTimes} from "@fortawesome/free-solid-svg-icons";
 import BootstrapTable from "react-bootstrap-table-next";
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
 import Error from "../../components/Error/Error";
@@ -13,15 +13,16 @@ import "./mobility.scss";
 const Mobility = () => {
     const [auth, setAuth] = useState({email: "", password: "", token: ""});
     const [hasError, setHasError] = useState(false);
-    const [imageUrl, setImageUrl] = useState("");
     const [config, setConfig] = useState({theData: [], filterString: "", searchingState: false});
     const [width, setWidth] = useState(window.innerWidth);
-    const [plateId, setPlateId] = useState("");
     const breakpoint = 768;
+    let imageUrl = "";
+    let plateId = "";
+
 
     const columns = [
         {
-            dataField: 'kenteken',
+            dataField: 'license_plate',
             text: 'Licence Plate'
         },
         {
@@ -50,7 +51,16 @@ const Mobility = () => {
         },
         {
             dataField: 'image_url',
-            text: 'Image'
+            text: 'Image',
+            formatter: (cell, contact) => {
+                return (
+                    <div className="d-flex justify-content-between">
+                        <a href={contact.image_url} target="_blank" rel="noreferrer">
+                            <FontAwesomeIcon style={{color: '#000'}} icon={faLink} />
+                        </a>
+                    </div>
+                )
+            }
         }
     ];
 
@@ -88,18 +98,36 @@ const Mobility = () => {
         axios
             .get(MOBILITY_SEARCH_PLATE+plate, {headers: authHeader()})
             .then(({data}) => {
-                setPlateId(data.id);
-                axios
-                    .put(MOBILITY_UPDATE+plateId, {vehicle: params},{headers: authHeader()})
-                    .then(({data}) => {
-                        console.log(data)
+                if(data){
+                    plateId = data.id;
+                    axios.put(MOBILITY_UPDATE+plateId, {vehicle: params},{headers: authHeader()})
+                        .then(() => {
+                            axios
+                                .get(MOBILITY_SEARCH_PLATE+plate, {headers: authHeader()})
+                                .then(({data}) => {
+                                    if(data){
+                                        data["id"] = 0;
+                                        setConfig({
+                                            theData: [data],
+                                            filterString: config.filterString,
+                                            searchingState: true
+                                        });
+                                    }else{
+                                        setConfig({
+                                            theData: [],
+                                            filterString: config.filterString,
+                                            searchingState: config.searchingState
+                                        });
+                                    }
+                                });
+                        });
+                }else{
+                    setConfig({
+                        theData: [],
+                        filterString: config.filterString,
+                        searchingState: config.searchingState
                     });
-                data["id"] = 0;
-                setConfig({
-                    theData: [data],
-                    filterString: config.filterString,
-                    searchingState: config.searchingState
-                });
+                }
             });
     };
 
@@ -117,8 +145,9 @@ const Mobility = () => {
                         for( let key in Object.keys(data.items[item]) ){
                             if( Object.keys(data.items[item])[key] === "pagemap"){
                                 if(data.items[item].pagemap.cse_image){
-                                    setImageUrl(data.items[item].pagemap.cse_image[0].src);
-                                    break; // I assume that the first image got is relevant for the search and therefore I omit the rest images if there are any
+                                    if(imageUrl.length === 0){
+                                        imageUrl = data.items[item].pagemap.cse_image[0].src;
+                                    }
                                 }
                             }
                         }

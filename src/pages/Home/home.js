@@ -5,7 +5,7 @@ import {FETCH_API} from "../../core/api";
 import {Container, Card, Row, Col, Button, Modal} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
-import paginationFactory from 'react-bootstrap-table2-paginator';
+import paginationFactory from "react-bootstrap-table2-paginator";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
 import Error from "../../components/Error/Error";
