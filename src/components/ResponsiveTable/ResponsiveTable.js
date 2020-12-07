@@ -1,33 +1,10 @@
 import React, {useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
-import {Card, Row, Col, Button, Modal} from "react-bootstrap";
+import {Card, Row, Col, Button} from "react-bootstrap";
+import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
 import "./ResponsiveTable.scss";
 
-const NewsFullView = (props) => {
-
-    return (
-        <Modal
-            {...props}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    {props.data.title}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>{props.data.content}</p>
-                <span className="text-left font-italic">by: {props.data.author ? props.data.author : "unknown author"}</span>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button size={"sm"} onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-};
 
 const ResponsiveTable = (props) => {
     const [showModal, setShowModal] = useState(false);
@@ -77,7 +54,7 @@ const ResponsiveTable = (props) => {
                 </Card>
             )}
 
-            {props.data.length > 0 && <NewsFullView
+            {props.data.length > 0 && <ViewItemModal
                 index={index}
                 data={props.data[index]}
                 show={showModal}

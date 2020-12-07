@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import axios from "axios";
 import {FETCH_API} from "../../core/api";
-import {Container, Card, Row, Col, Button, Modal} from "react-bootstrap";
+import {Container, Card, Row, Col, Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -10,31 +10,10 @@ import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
 import Error from "../../components/Error/Error";
 import CustomInput from "../../components/CustomInput/CustomInput";
+import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
 import "./home.scss";
 
-const NewsFullView = (props) => {
-    return (
-        <Modal
-            {...props}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    {props.data.title}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>{props.data.content}</p>
-                <span className="text-left font-italic">by: {props.data.author ? props.data.author : "unknown author"}</span>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button size={"sm"} onClick={props.onHide}>Close</Button>
-            </Modal.Footer>
-        </Modal>
-    );
-};
+
 
 const Home = () => {
     const [config, setConfig] = useState({country: "", apiKey: "", filterString: "", searchingState: false, theNews: []});
@@ -235,7 +214,7 @@ const Home = () => {
             </section>}
             {hasError && <Error origin="home"/>}
 
-            {config.theNews.length > 0 && <NewsFullView
+            {config.theNews.length > 0 && <ViewItemModal
                 index={index}
                 data={config.theNews[index]}
                 show={showModal}

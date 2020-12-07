@@ -39,10 +39,6 @@ body > #root > div {
 
 .loading-container {
   height: 100vh;
-
-  .spinner-border {
-
-  }
 }
 
 .col-sm-1 {
@@ -62,38 +58,6 @@ body > #root > div {
   max-width: 100% !important;
   flex: 1 !important;
 
-}
-
-.modal-dialog {
-  color: #5D6D7E;
-
-  .h4 {
-    font-size: 1rem;
-  }
-
-  .modal-header {
-    background: #FADBD8;
-
-    .close {
-      outline: none;
-    }
-  }
-
-  .modal-body {
-    background: #F8F9F9;
-  }
-  .modal-footer {
-    padding: 0;
-    border-top: none;
-    background: #F8F9F9;
-
-    .btn-primary, .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:active {
-      box-shadow: none;
-      background: #D98880;
-      border: none;
-      color: #000;
-    }
-  }
 }
 
 #body-row {
