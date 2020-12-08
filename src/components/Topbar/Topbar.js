@@ -29,9 +29,9 @@ const Topbar = (props) => {
                     }
                 }
             }}>
-            <Navbar.Brand className="app-name" href="/home">
+            <Navbar.Brand className="app-name" href="https://github.com/flaviuspilca/react-play" target="_blanc">
                 <span className="image-logo"></span>
-                <span>The Playground</span>
+                <span className="app-title">The Playground</span>
             </Navbar.Brand>
 
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />

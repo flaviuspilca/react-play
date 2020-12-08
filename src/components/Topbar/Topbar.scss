@@ -13,9 +13,9 @@
 
   .image-logo {
     height: 30px;
-    width: 30px;
+    width: 31px;
     background-size: contain;
-    background-image: url('../../images/play.png');
+    background-image: url('../../images/github.png');
     display: inline-block;
   }
 
@@ -28,6 +28,7 @@
   }
 
   .navbar-nav a {
+    position: relative;
     background: #FADBD8;
     color: #85929E;
   }
@@ -43,6 +44,14 @@
   .rounded-circle {
     width: 2rem;
     height: 2rem;
+  }
+
+  .image-logo {
+    position: absolute;
+  }
+
+  .app-title {
+    margin-left: 35px;
   }
 
   @media (min-width: 481px) {
