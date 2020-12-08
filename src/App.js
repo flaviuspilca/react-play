@@ -55,7 +55,7 @@ const App = () => {
                 <Sidebar location={location} history={history} config={navigationConfig}/>
             </div>
             <div className="col-sm-11">
-                <Navbar location={location} history={history} />
+                <Navbar location={location} history={history} config={navigationConfig}/>
                 <main role="main" className="container-fluid flex-grow-1 overflow-auto">
                     <Switch>
                         <Route path={["/", "/home"]} exact component={Home} />

@@ -5,12 +5,15 @@ import {useAuth0} from "@auth0/auth0-react";
 import "./Topbar.scss";
 
 const Topbar = (props) => {
-    const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+    const {isAuthenticated, loginWithRedirect, logout, user} = useAuth0();
     const history = useHistory();
 
     return (
     <div className="nav-container">
-        <Navbar expand="lg" collapseOnSelect="true" className="custom-nav" onSelect={(selected) => {
+        <Navbar expand="lg"
+                collapseOnSelect="true"
+                className="custom-nav"
+                onSelect={(selected) => {
                 if( selected !== 'log-in-out') {
                     const navigateTo = '/' + selected;
                     if (props.location.pathname !== navigateTo) {
@@ -45,10 +48,17 @@ const Topbar = (props) => {
 
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                 <Nav className="mr-auto">
-                    <Nav.Link href="#" eventKey="home">Home</Nav.Link>
-                    <Nav.Link href="#" eventKey="mobility">Mobility</Nav.Link>
-                    { isAuthenticated && <Nav.Link href="#" eventKey="profile">Profile</Nav.Link>}
-                    <Nav.Link href="#" eventKey="log-in-out">{isAuthenticated ? "Log Out" : "Log In"}</Nav.Link>
+                    {
+                        props.config.map((item, index) => (
+                            item.show ? <Nav.Link
+                                key={index}
+                                href="#"
+                                eventKey={item.pageName.toLowerCase()}
+                            >
+                                {item.pageName.toLowerCase() === "log-in-out" ?  (isAuthenticated ? "Log Out" : "Log In") : item.pageName}
+                            </Nav.Link> : ""
+                        ))
+                    }
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
