@@ -1,8 +1,7 @@
-import React, {useContext} from "react";
+import React from "react";
 import {useHistory} from "react-router-dom";
 import {Nav, Navbar} from "react-bootstrap";
 import {useAuth0} from "@auth0/auth0-react";
-import UserContext from "../Context/context";
 import "./Topbar.scss";
 
 const Topbar = (props) => {
@@ -27,7 +26,7 @@ const Topbar = (props) => {
                     }
                 }
             }}>
-            <Navbar.Brand href="/home">
+            <Navbar.Brand className="app-name" href="/home">
                 <span className="image-logo"></span>
                 <span>The Playground</span>
             </Navbar.Brand>
@@ -36,11 +35,20 @@ const Topbar = (props) => {
             <Nav className="ml-auto">
                 <Navbar.Text>{isAuthenticated ? "Welcome " + user.name : "Welcome! You are not logged in"}</Navbar.Text>
             </Nav>
+            {isAuthenticated && <Navbar.Brand>
+                <img
+                    src={user.picture}
+                    alt="Profile"
+                    className="rounded-circle"
+                />
+            </Navbar.Brand>}
+
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                 <Nav className="mr-auto">
                     <Nav.Link href="#" eventKey="home">Home</Nav.Link>
                     <Nav.Link href="#" eventKey="mobility">Mobility</Nav.Link>
                     { isAuthenticated && <Nav.Link href="#" eventKey="profile">Profile</Nav.Link>}
+                    <Nav.Link href="#" eventKey="log-in-out">{isAuthenticated ? "Log Out" : "Log In"}</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

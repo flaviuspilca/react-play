@@ -9,7 +9,6 @@ import Home from "./pages/Home/home";
 import Profile from "./pages/Profile/profile";
 import Mobility from "./pages/Mobility/mobility";
 import ProtectedRoute from "./auth/protected-route";
-import UserContext from "./components/Context/context";
 import "./App.scss";
 
 const App = () => {
@@ -22,7 +21,6 @@ const App = () => {
     }
 
     return (
-        <UserContext.Provider>
         <div id="body-row" className="row no-gutters">
             <div className="col-sm-1">
                 <Sidebar location={location} history={history} />
@@ -39,7 +37,6 @@ const App = () => {
                 <Footer />
             </div>
         </div>
-        </UserContext.Provider>
     );
 };
 

@@ -70,7 +70,7 @@ const Sidebar = (props) => {
                                 Profile
                             </NavText>
                         </NavItem>}
-                        <NavItem eventKey="log-in-out" className="login-button" aria-label="sss">
+                        <NavItem eventKey="log-in-out" className="login-button">
                             <NavIcon>
                                 <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={isAuthenticated ? faSignOutAlt : faSignInAlt} />
                             </NavIcon>
