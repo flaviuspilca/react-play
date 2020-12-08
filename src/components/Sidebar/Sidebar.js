@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import SideNav, {NavItem, NavIcon, NavText} from "@trendmicro/react-sidenav";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHome, faUser, faSpaceShuttle, faSignOutAlt, faSignInAlt} from "@fortawesome/free-solid-svg-icons";
 import {useAuth0} from "@auth0/auth0-react";
 import ClickOutside from "react-click-outside";
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
@@ -10,7 +9,7 @@ import "./Sidebar.scss";
 
 
 const Sidebar = (props) => {
-    const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+    const {isAuthenticated, loginWithRedirect, logout} = useAuth0();
     const history = useHistory();
     const [expanded, setExpanded] = useState(false);
 
@@ -46,38 +45,22 @@ const Sidebar = (props) => {
                 >
                     <SideNav.Toggle />
                     <SideNav.Nav defaultSelected={props.location.pathname.toString().substring(1) || "home"}>
-                        <NavItem eventKey="home">
-                            <NavIcon>
-                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faHome} />
-                            </NavIcon>
-                            <NavText>
-                                Home
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="mobility">
-                            <NavIcon>
-                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faSpaceShuttle} />
-                            </NavIcon>
-                            <NavText>
-                                Mobility
-                            </NavText>
-                        </NavItem>
-                        { isAuthenticated && <NavItem eventKey="profile">
-                            <NavIcon>
-                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={faUser} />
-                            </NavIcon>
-                            <NavText>
-                                Profile
-                            </NavText>
-                        </NavItem>}
-                        <NavItem eventKey="log-in-out" className="login-button">
-                            <NavIcon>
-                                <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={isAuthenticated ? faSignOutAlt : faSignInAlt} />
-                            </NavIcon>
-                            <NavText>
-                                {isAuthenticated ? "Log Out" : "Log In"}
-                            </NavText>
-                        </NavItem>
+                        {
+                            props.config.map((item, index)=>(
+                                item.show ? <NavItem
+                                    key={index}
+                                    eventKey={item.pageName.toLowerCase()}
+                                    className={item.pageName.toLowerCase() === "log-in-out" ? "login-button":""}
+                                >
+                                    <NavIcon>
+                                        <FontAwesomeIcon style={{color: '#FDEDEC'}} icon={item.icon} />
+                                    </NavIcon>
+                                    <NavText>
+                                        {item.pageName.toLowerCase() === "log-in-out" ?  (isAuthenticated ? "Log Out" : "Log In") : item.pageName}
+                                    </NavText>
+                                </NavItem> : ""
+                            ))
+                        }
                     </SideNav.Nav>
                 </SideNav>
             </ClickOutside>

@@ -4,7 +4,7 @@ import {useAuth0} from "@auth0/auth0-react";
 
 
 const Profile = () => {
-  const { user } = useAuth0();
+  const {user} = useAuth0();
 
   return (
     <div className="profile-page-container">
@@ -25,13 +25,8 @@ const Profile = () => {
                     <Card.Body>
                         <Row>
                             <Col>
-                                <h2>{user.name}</h2>
-                                <p className="lead text-muted">{user.email}</p>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                {JSON.stringify(user, null, 2)}
+                                Username: <h3>{user.name}</h3>
+                                Email: <h5>{user.email}</h5>
                             </Col>
                         </Row>
                     </Card.Body>
