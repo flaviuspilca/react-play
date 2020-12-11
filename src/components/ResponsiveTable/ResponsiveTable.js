@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
+import {faLink, faEye, faHeart} from "@fortawesome/free-solid-svg-icons";
 import {Card, Row, Col, Button} from "react-bootstrap";
 import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
 import "./ResponsiveTable.scss";
@@ -10,17 +10,29 @@ const ResponsiveTable = (props) => {
     const [showModal, setShowModal] = useState(false);
     const [index, setIndex] = useState(0);
 
+    const getIcon = (type) => {
+        if( type === "iconView" ) return faEye;
+        if( type === "iconUrl" ) return faLink;
+        if( type === "iconFav" ) return faHeart;
+    };
+
     const buildIconCell = (type, url, index) => {
-        return(<>
-            {type === 'url' && <a href={url} target="_blank" rel="noreferrer">
-                <FontAwesomeIcon style={{color: "#000"}} icon={type === "view" ? faEye : faLink} />
-            </a>}
-            {type === 'view' && <Button variant="link" size="sm" onClick={() => {
-                setIndex(index);
-                setShowModal(true)
-            }}>
-                <FontAwesomeIcon style={{color: '#000'}} icon={faEye} />
-            </Button>}
+        return(
+            <>
+                {type === 'iconView' && <Button variant="link" size="sm" onClick={() => {
+                    setIndex(index);
+                    setShowModal(true)
+                }}>
+                    <FontAwesomeIcon style={{color: '#000'}} icon={getIcon(type)} />
+                </Button>}
+                {type === 'iconUrl' && <a href={url} target="_blank" rel="noreferrer">
+                    <FontAwesomeIcon style={{color: "#000"}} icon={getIcon(type)} />
+                </a>}
+                {type === 'iconFav' && <Button variant="link" size="sm" onClick={() => {
+
+                }}>
+                    <FontAwesomeIcon style={{color: '#000'}} icon={getIcon(type)} />
+                </Button>}
             </>
         )
     };
@@ -36,7 +48,7 @@ const ResponsiveTable = (props) => {
                                     return(
                                         <Row key={index}>
                                             <Col className="col-4"><span className="font-weight-bold">{col.text}</span></Col>
-                                            <Col className="col-8">{col.dataField === 'view' || col.dataField === 'url' ? buildIconCell(col.dataField, item[col.dataField], item.id) : item[col.dataField]}</Col>
+                                            <Col className="col-8">{col.dataField.startsWith("icon") ? buildIconCell(col.dataField, item[col.dataField], item.id) : item[col.dataField]}</Col>
                                         </Row>
                                     )
                                 })

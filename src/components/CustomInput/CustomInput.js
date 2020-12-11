@@ -10,7 +10,6 @@ import "./CustomInput.scss";
 
 const CustomInput = (props) => {
     const {placeholder, field, method, name} = props;
-
     const searchNews = (params) => {
         axios
             .get(SEARCH_API, {params})

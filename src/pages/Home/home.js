@@ -1,26 +1,29 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import axios from "axios";
 import {FETCH_API} from "../../core/api";
 import {Container, Card, Row, Col, Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faLink, faEye} from "@fortawesome/free-solid-svg-icons";
+import {faLink, faEye, faHeart} from "@fortawesome/free-solid-svg-icons";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
 import Error from "../../components/Error/Error";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
+import {HomeContext} from "../../App";
 import "./home.scss";
 
 
 
 const Home = () => {
     const [config, setConfig] = useState({country: "", apiKey: "", filterString: "", searchingState: false, theNews: []});
+    const [iconConfig, setIconConfig] = useState({iconIndex: 0, iconColor: "#000"});
     const [hasError, setHasError] = useState(false);
     const [width, setWidth] = useState(window.innerWidth);
     const [showModal, setShowModal] = useState(false);
     const [index, setIndex] = useState(0);
+    const {favs, setFavs} = useContext(HomeContext);
     const breakpoint = 768;
 
     const columns = [
@@ -46,7 +49,7 @@ const Home = () => {
             }
         },
         {
-            dataField: 'view',
+            dataField: 'iconView',
             text: 'Quick preview',
             headerStyle: {width: '100px'},
             formatter: (cell, contact) => {
@@ -63,7 +66,7 @@ const Home = () => {
             }
         },
         {
-            dataField: 'url',
+            dataField: 'iconUrl',
             text: 'Url',
             headerStyle: {width: '50px'},
             formatter: (cell, contact) => {
@@ -72,6 +75,31 @@ const Home = () => {
                         <a href={contact.url} target="_blank" rel="noreferrer">
                             <FontAwesomeIcon style={{color: '#000'}} icon={faLink} />
                         </a>
+                    </div>
+                )
+            }
+        },
+        {
+            dataField: 'iconFav',
+            text: 'Set as favourite',
+            headerStyle: {width: '70px'},
+            formatter: (cell, contact) => {
+                return (
+                    <div className="d-flex justify-content-between">
+                        <Button variant="link" size="sm" onClick={() => {
+                            contact.iconFav = !contact.iconFav;
+                            setIconConfig({iconIndex: contact.id, iconColor: contact.iconFav ? "red":"#000"});
+                            if( favs.filter((item)=>(
+                                item.id === contact.id
+                            )).length === 0 ){
+                                setFavs(contact);
+                            }
+                        }}>
+                            <FontAwesomeIcon
+                                style={{color: contact.iconFav && contact.id === iconConfig.iconIndex ? iconConfig.iconColor : "#000"}}
+                                icon={faHeart}
+                            />
+                        </Button>
                     </div>
                 )
             }
@@ -106,7 +134,11 @@ const Home = () => {
         axios
             .get(FETCH_API, {params})
             .then(({data}) => {
-                data.articles.map((item, index) => (item["id"] = index));
+                data.articles.map((item, index) => {
+                    item["id"] = index;
+                    item["iconFav"] = false;
+                    return item;
+                });
                 setConfig({
                     country: config.country,
                     apiKey: config.apiKey,

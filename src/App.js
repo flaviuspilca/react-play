@@ -1,4 +1,4 @@
-import React from "react";
+import React, {createContext, useReducer} from "react";
 import {Route, Switch, useHistory, useLocation} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
 import {faHome, faUser, faSpaceShuttle, faCalendar, faSignOutAlt, faSignInAlt} from "@fortawesome/free-solid-svg-icons";
@@ -13,10 +13,18 @@ import Mobility from "./pages/Mobility/mobility";
 import ProtectedRoute from "./auth/protected-route";
 import "./App.scss";
 
+export const HomeContext = createContext();
+
+function reducer(state, item) {
+    return [...state, item]
+}
+
 const App = () => {
     const {isAuthenticated, isLoading} = useAuth0();
     const history = useHistory();
     const location = useLocation();
+    const [favs, setFavs] = useReducer(reducer, []);
+
 
     const navigationConfig = [
         {
@@ -50,23 +58,29 @@ const App = () => {
     }
 
     return (
-        <div id="body-row" className="row no-gutters">
-            <div className="col-sm-1">
-                <Sidebar location={location} history={history} config={navigationConfig}/>
+        <HomeContext.Provider value={{favs, setFavs}}>
+            <div id="body-row" className="row no-gutters">
+                <div className="col-sm-1">
+                    <Sidebar location={location} history={history} config={navigationConfig}/>
+                </div>
+                <div className="col-sm-11">
+                    <Navbar location={location} history={history} config={navigationConfig}/>
+                    <main role="main" className="container-fluid flex-grow-1 overflow-auto">
+                        <Switch>
+                            <Route path={["/", "/home"]}
+                                   exact
+                                   render={() => <Home favs={favs || null}/>}/>
+                            <ProtectedRoute path="/profile" component={Profile} />
+                            <Route path="/mobility" component={Mobility} />
+                            <Route path="/agenda"
+                                   render={() => <Agenda favs={favs}/>}
+                            />
+                        </Switch>
+                    </main>
+                    <Footer />
+                </div>
             </div>
-            <div className="col-sm-11">
-                <Navbar location={location} history={history} config={navigationConfig}/>
-                <main role="main" className="container-fluid flex-grow-1 overflow-auto">
-                    <Switch>
-                        <Route path={["/", "/home"]} exact component={Home} />
-                        <ProtectedRoute path="/profile" component={Profile} />
-                        <Route path="/mobility" component={Mobility} />
-                        <Route path="/agenda" component={Agenda} />
-                    </Switch>
-                </main>
-                <Footer />
-            </div>
-        </div>
+        </HomeContext.Provider>
     );
 };
 
