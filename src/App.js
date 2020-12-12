@@ -75,7 +75,7 @@ const App = () => {
                         <Switch>
                             <Route path="/"
                                    exact
-                                   render={() => (<Redirect to="/home" />)}/>
+                                   render={() => <Redirect to="/home" />}/>
                             <Route path="/home" component={Home} />
                             <ProtectedRoute path="/profile" component={Profile} />
                             <Route path="/mobility" component={Mobility} />
