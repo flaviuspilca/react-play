@@ -26,7 +26,6 @@ const App = () => {
     const location = useLocation();
     const [favs, setFavs] = useReducer(reducer, []);
 
-
     const navigationConfig = [
         {
             pageName: "Home",
