@@ -1,5 +1,5 @@
 import React, {createContext, useReducer} from "react";
-import {Route, Switch, useHistory, useLocation} from "react-router-dom";
+import {Route, Switch, useHistory, useLocation, Redirect} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
 import {faHome, faUser, faSpaceShuttle, faBookmark, faCalculator, faSignOutAlt, faSignInAlt} from "@fortawesome/free-solid-svg-icons";
 import Navbar from "./components/Topbar/Topbar";
@@ -73,9 +73,10 @@ const App = () => {
                     <Navbar location={location} history={history} config={navigationConfig}/>
                     <main role="main" className="container-fluid flex-grow-1 overflow-auto">
                         <Switch>
-                            <Route path={["/", "/home"]}
+                            <Route path="/"
                                    exact
-                                   render={() => <Home favs={favs || null}/>}/>
+                                   render={() => <Redirect to="/home"/>}/>
+                            <Route path="/home" component={Home} />
                             <ProtectedRoute path="/profile" component={Profile} />
                             <Route path="/mobility" component={Mobility} />
                             <Route path="/bookmarks"
