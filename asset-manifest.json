@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/react-play/home/static/css/main.11a85e18.chunk.css",
-    "main.js": "/react-play/home/static/js/main.bf9ef34f.chunk.js",
-    "main.js.map": "/react-play/home/static/js/main.bf9ef34f.chunk.js.map",
-    "runtime-main.js": "/react-play/home/static/js/runtime-main.948f6db2.js",
-    "runtime-main.js.map": "/react-play/home/static/js/runtime-main.948f6db2.js.map",
-    "static/css/2.758395a7.chunk.css": "/react-play/home/static/css/2.758395a7.chunk.css",
-    "static/js/2.3520e9ad.chunk.js": "/react-play/home/static/js/2.3520e9ad.chunk.js",
-    "static/js/2.3520e9ad.chunk.js.map": "/react-play/home/static/js/2.3520e9ad.chunk.js.map",
-    "index.html": "/react-play/home/index.html",
-    "static/css/2.758395a7.chunk.css.map": "/react-play/home/static/css/2.758395a7.chunk.css.map",
-    "static/css/main.11a85e18.chunk.css.map": "/react-play/home/static/css/main.11a85e18.chunk.css.map",
-    "static/js/2.3520e9ad.chunk.js.LICENSE.txt": "/react-play/home/static/js/2.3520e9ad.chunk.js.LICENSE.txt",
-    "static/media/Topbar.scss": "/react-play/home/static/media/github.c8007a9f.png"
+    "main.css": "/react-play/static/css/main.013f3f29.chunk.css",
+    "main.js": "/react-play/static/js/main.b1efdaa0.chunk.js",
+    "main.js.map": "/react-play/static/js/main.b1efdaa0.chunk.js.map",
+    "runtime-main.js": "/react-play/static/js/runtime-main.7eb3095f.js",
+    "runtime-main.js.map": "/react-play/static/js/runtime-main.7eb3095f.js.map",
+    "static/css/2.758395a7.chunk.css": "/react-play/static/css/2.758395a7.chunk.css",
+    "static/js/2.3520e9ad.chunk.js": "/react-play/static/js/2.3520e9ad.chunk.js",
+    "static/js/2.3520e9ad.chunk.js.map": "/react-play/static/js/2.3520e9ad.chunk.js.map",
+    "index.html": "/react-play/index.html",
+    "static/css/2.758395a7.chunk.css.map": "/react-play/static/css/2.758395a7.chunk.css.map",
+    "static/css/main.013f3f29.chunk.css.map": "/react-play/static/css/main.013f3f29.chunk.css.map",
+    "static/js/2.3520e9ad.chunk.js.LICENSE.txt": "/react-play/static/js/2.3520e9ad.chunk.js.LICENSE.txt",
+    "static/media/Topbar.scss": "/react-play/static/media/github.c8007a9f.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.948f6db2.js",
+    "static/js/runtime-main.7eb3095f.js",
     "static/css/2.758395a7.chunk.css",
     "static/js/2.3520e9ad.chunk.js",
-    "static/css/main.11a85e18.chunk.css",
-    "static/js/main.bf9ef34f.chunk.js"
+    "static/css/main.013f3f29.chunk.css",
+    "static/js/main.b1efdaa0.chunk.js"
   ]
 }
