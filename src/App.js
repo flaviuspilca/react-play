@@ -1,5 +1,5 @@
 import React, {createContext, useReducer} from "react";
-import {Route, useHistory, useLocation, Redirect, HashRouter} from "react-router-dom";
+import {Route, Switch, useHistory, useLocation, Redirect} from "react-router-dom";
 import {useAuth0} from "@auth0/auth0-react";
 import {faHome, faUser, faSpaceShuttle, faBookmark, faCalculator, faSignOutAlt, faSignInAlt} from "@fortawesome/free-solid-svg-icons";
 import Navbar from "./components/Topbar/Topbar";
@@ -71,7 +71,7 @@ const App = () => {
                 <div className="col-sm-11">
                     <Navbar location={location} history={history} config={navigationConfig}/>
                     <main role="main" className="container-fluid flex-grow-1 overflow-auto">
-                        <HashRouter basename="/">
+                        <Switch>
                             <Route path="/"
                                    exact
                                    render={() => <Redirect to="/home" />}/>
@@ -82,7 +82,7 @@ const App = () => {
                                    render={() => <Bookmarks favs={favs} />}
                             />
                             <Route path="/tax" component={Tax} />
-                        </HashRouter>
+                        </Switch>
                     </main>
                     <Footer />
                 </div>
