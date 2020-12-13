@@ -1,5 +1,7 @@
 .tax-page-container {
 
+  min-width: 300px;
+
   .tax-calculator {
     border: none;
   }
@@ -8,6 +10,25 @@
     background-color: #D98880;
     border: none;
     color: #000;
+
+    h3 {
+      margin-bottom: 0;
+    }
   }
 
+  .income-result {
+    h3 {
+      margin-bottom: 0;
+      line-height: 2;
+      font-weight: 300;
+    }
+  }
+
+  .btn-primary:disabled {
+    cursor: not-allowed;
+  }
+
+  .btn-primary:disabled:hover {
+    opacity: 0.65;
+  }
 }
