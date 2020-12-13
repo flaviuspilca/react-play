@@ -1,6 +1,6 @@
 .tax-page-container {
 
-  min-width: 300px;
+  min-width: 320px;
 
   .tax-calculator {
     border: none;
@@ -21,6 +21,11 @@
       margin-bottom: 0;
       line-height: 2;
       font-weight: 300;
+    }
+
+    h6 {
+      margin-bottom: 0;
+      line-height: 3;
     }
   }
 

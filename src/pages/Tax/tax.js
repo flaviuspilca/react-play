@@ -6,12 +6,14 @@ import "./tax.scss";
 const Tax = () => {
 
     const [income, setIncome] = useState("");
-    const [userData, setUserData] = useState({amount: 0, year: 0});
-    const schemeCollection = [
+    const [taxes, setTaxes] = useState("");
+    const [allowance, setAllowance] = useState("");
+    const [userData, setUserData] = useState({amount: "", year: ""});
+    const schemaCollection = [
         {
-            id: 2019,
+            id: "19-20",
             basicIncome: {
-                minRange: 12500,
+                minRange: 12501,
                 maxRange: 50000,
                 rate: 20
             },
@@ -20,10 +22,12 @@ const Tax = () => {
                 maxRange: 150000,
                 rate: 40
             },
+            allowance: 12500,
+            allowanceLimit: 100000,
             additionalRate: 45
         },
         {
-            id: 2020,
+            id: "21-22",
             basicIncome: {
                 minRange: 12500,
                 maxRange: 50000,
@@ -34,34 +38,8 @@ const Tax = () => {
                 maxRange: 150000,
                 rate: 40
             },
-            additionalRate: 45
-        },
-        {
-            id: 2021,
-            basicIncome: {
-                minRange: 12500,
-                maxRange: 50000,
-                rate: 20
-            },
-            highIncome: {
-                minRange: 50001,
-                maxRange: 150000,
-                rate: 40
-            },
-            additionalRate: 45
-        },
-        {
-            id: 2022,
-            basicIncome: {
-                minRange: 12500,
-                maxRange: 50000,
-                rate: 20
-            },
-            highIncome: {
-                minRange: 50001,
-                maxRange: 150000,
-                rate: 40
-            },
+            allowance: 12500,
+            allowanceLimit: 100000,
             additionalRate: 45
         }
     ];
@@ -69,44 +47,57 @@ const Tax = () => {
         pound: "£"
     };
 
-    const calculateTax = (scheme, income) => {
-        let output;
+    const calculateTax = (schema, income) => {
+        let output, taxes, allowance;
+        allowance = schema.allowance;
 
-        if( income <= scheme.highIncome.maxRange ) {
-            if( income < scheme.basicIncome.minRange ) {
+        if( income <= schema.highIncome.maxRange ) {
+            if( income < schema.basicIncome.minRange ) {
+                taxes=0;
                 output = income;
             }
-            if( income >= scheme.basicIncome.minRange && income <= scheme.basicIncome.maxRange ){
-                output = income - scheme.basicIncome.rate/100 * income;
+            if( income >= schema.basicIncome.minRange && income <= schema.basicIncome.maxRange ){
+                taxes = schema.basicIncome.rate/100 * income;
+                output = income - taxes;
             }
-            if( income >= scheme.highIncome.minRange && income <= scheme.highIncome.maxRange ){
-                output = income - scheme.highIncome.rate/100 * income;
+            if( income >= schema.highIncome.minRange && income <= schema.highIncome.maxRange ){
+                taxes = schema.highIncome.rate/100 * income;
+                output = income - taxes;
             }
         }else{
-            output = income - scheme.additionalRate/100 * income;
+            taxes = schema.additionalRate/100 * income;
+            output = income - taxes;
         }
 
-        return output
+        if( income > schema.allowanceLimit) {
+            const diff = income - schema.allowanceLimit;
+            if( diff >= 2*allowance ) allowance = 0;
+            else allowance = allowance - diff/2;
+        }
+
+        return [output, taxes, allowance]
     };
 
     return(<div className="tax-page-container">
         <section className="content">
             <Container>
                 <Card>
-                    <Card.Header>
+                    <Card.Header className="text-center">
                         <Row>
                             <Col>
-                                <h3>Welcome to the tax calculator page!</h3>
+                                <h3>Welcome to the tax calculator page</h3>
                             </Col>
                         </Row>
                     </Card.Header>
                     <Card.Body>
                         <Row>
-                            <Col md={3}>
+                            <Col md={2}>
 
                             </Col>
-                            <Col md={6}>
+                            <Col md={8}>
                                 <Card className="shadow p-3 bg-white rounded tax-calculator">
+                                    <h6>This widget will help you better project your monthly net income.</h6>
+                                    <p>To use this calculator you need to fill in the below two fields, representing the desired annual gross income and the fiscal year to refer the calculation.</p>
                                     <Form>
                                         <Form.Group controlId="incomeField">
                                             <InputGroup className="mb-2 mr-sm-2">
@@ -115,8 +106,12 @@ const Tax = () => {
                                                     type="number"
                                                     placeholder="Insert your income"
                                                     onChange={(e)=>{
-                                                        if( e.currentTarget.value.toString().length > 10 ) {
-                                                            e.currentTarget.value = e.currentTarget.value.toString().substring(0,10);
+                                                        const string = e.currentTarget.value.toString();
+                                                        if( string.charAt(0) === "0" ) {
+                                                            e.currentTarget.value = string.substring(1,string.length);
+                                                        }
+                                                        if( string.length > 10 ) {
+                                                            e.currentTarget.value = string.substring(0,10);
                                                         }
                                                         setIncome("");
                                                         setUserData({
@@ -144,19 +139,20 @@ const Tax = () => {
                                                     }
                                                 }
                                             >
-                                                <option value="0">Please select a year</option>
-                                                <option value="2019">2019</option>
-                                                <option value="2020">2020</option>
-                                                <option value="2021">2021</option>
-                                                <option value="2022">2022</option>
+                                                <option value="-">Please select a year</option>
+                                                <option value="19-20">2019-2020</option>
+                                                <option value="21-22">2021-2022</option>
                                             </Form.Control>
                                         </Form.Group>
                                         <Button
                                             className="button-calculate btn btn-primary btn-block shadow-none"
-                                            disabled={userData.amount.toString().length === 0 || userData.year.toString().length !== 4}
+                                            disabled={Number(userData.amount) === 0 || userData.year.length !== 5}
                                             onClick={(e) => {
-                                                    const scheme = schemeCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
-                                                    setIncome(calculateTax(scheme[0], userData.amount));
+                                                    const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
+                                                    const calculate = calculateTax(schema[0], userData.amount);
+                                                    setIncome(calculate[0]);
+                                                    setTaxes(calculate[1]);
+                                                    setAllowance(calculate[2]);
                                                     e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                 }
                                             }
@@ -165,18 +161,91 @@ const Tax = () => {
                                         </Button>
                                     </Form>
                                     <div className="income-result text-center">
-                                        {income.toString().length>0 && <h3>
-                                            <NumberFormat
-                                                value={income}
-                                                displayType={'text'}
-                                                thousandSeparator={true}
-                                                prefix={currency.pound}
-                                            />
-                                        </h3>}
+                                        {income.toString().length>0 && <Card>
+                                            <Row>
+                                                <Col md={6}>
+                                                    <h6><small>Total taxes paid:</small></h6>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <h3>
+                                                        <NumberFormat
+                                                            value={Number(taxes).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </h3>
+                                                </Col>
+                                            </Row>
+
+                                            <Row>
+                                                <Col md={6}>
+                                                    <h6><small>Total income received:</small></h6>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <h3>
+                                                        <NumberFormat
+                                                            value={Number(income).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </h3>
+                                                </Col>
+                                            </Row>
+
+                                            <Row>
+                                                <Col md={6}>
+                                                    <h6><small>Gross income per month:</small></h6>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <h3>
+                                                        <NumberFormat
+                                                            value={Number(userData.amount/12).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </h3>
+                                                </Col>
+                                            </Row>
+
+                                            <Row>
+                                                <Col md={6}>
+                                                    <h6><small>Net income per month:</small></h6>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <h3>
+                                                        <NumberFormat
+                                                            value={Number(income/12).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </h3>
+                                                </Col>
+                                            </Row>
+
+                                            <Row>
+                                                <Col md={6}>
+                                                    <h6><small>Personal allowance per year:</small></h6>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <h3>
+                                                        <NumberFormat
+                                                            value={Number(allowance).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </h3>
+                                                </Col>
+                                            </Row>
+                                        </Card>}
                                     </div>
                                 </Card>
                             </Col>
-                            <Col md={3}>
+                            <Col md={2}>
 
                             </Col>
                         </Row>
