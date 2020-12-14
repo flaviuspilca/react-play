@@ -32,6 +32,15 @@
       margin-bottom: 0;
       line-height: 3;
     }
+
+    .row {
+      width: 100%;
+      margin: auto;
+    }
+
+    .row:nth-child(even) {
+      background: #F8F9F9;
+    }
   }
 
   .btn-primary:disabled {

@@ -6,8 +6,9 @@ import "./tax.scss";
 const Tax = () => {
 
     const [income, setIncome] = useState("");
-    const [taxes, setTaxes] = useState("");
     const [allowance, setAllowance] = useState("");
+    const [incomeTaxes, setIncomeTaxes] = useState("");
+    const [insuranceTaxes, setInsuranceTaxes] = useState("");
     const [userData, setUserData] = useState({amount: "", year: ""});
     const schemaCollection = [
         {
@@ -18,17 +19,29 @@ const Tax = () => {
             basicRate: 20,
             highRate: 40,
             additionalRate: 45,
-            allowanceLimit: 100000
+            allowanceLimit: 100000,
+            insurance: {
+                lowLimit: 719,
+                lowRate: 12,
+                highLimit: 4167,
+                highRate: 2
+            }
         },
         {
-            id: "21-22",
+            id: "20-21",
             allowance: 12500,
             basicIncomeMaxLimit: 50000,
             highIncomeMaxLimit: 150000,
             basicRate: 20,
             highRate: 40,
             additionalRate: 45,
-            allowanceLimit: 100000
+            allowanceLimit: 100000,
+            insurance: {
+                lowLimit: 792,
+                lowRate: 12,
+                highLimit: 4167,
+                highRate: 2
+            }
         }
     ];
     const currency = {
@@ -38,9 +51,11 @@ const Tax = () => {
     const taxAmount = (rate, amount) => {
         return rate/100 * amount
     };
+
     const calculateTax = (schema, income) => {
-        let output, taxes, allowance;
+        let output, taxes, allowance, insuranceTax;
         taxes = 0;
+        insuranceTax = 0;
         allowance = schema.allowance;
 
         if( income > schema.allowanceLimit) {
@@ -67,9 +82,19 @@ const Tax = () => {
             output = income;
         }
 
+        if( output >= 12*schema.insurance.lowLimit ) {
+            if( output <= 12*schema.insurance.highLimit ) {
+                insuranceTax = taxAmount(12, output);
+            }else{
+                insuranceTax = taxAmount(2, output);
+            }
+        }else{
+            insuranceTax = 0;
+        }
 
+        output = output - insuranceTax;
 
-        return [output, taxes, allowance]
+        return [output, taxes, allowance, insuranceTax]
     };
 
     return(<div className="tax-page-container">
@@ -145,8 +170,9 @@ const Tax = () => {
                                                     const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
                                                     const calculate = calculateTax(schema[0], userData.amount);
                                                     setIncome(calculate[0]);
-                                                    setTaxes(calculate[1]);
+                                                    setIncomeTaxes(calculate[1]);
                                                     setAllowance(calculate[2]);
+                                                    setInsuranceTaxes(calculate[3]);
                                                     e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                 }
                                             }
@@ -163,7 +189,23 @@ const Tax = () => {
                                                 <Col md={6}>
                                                     <h3>
                                                         <NumberFormat
-                                                            value={Number(taxes).toFixed(2)}
+                                                            value={Number(incomeTaxes).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </h3>
+                                                </Col>
+                                            </Row>
+
+                                            <Row>
+                                                <Col md={6}>
+                                                    <h6><small>Insurance taxes paid per year:</small></h6>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <h3>
+                                                        <NumberFormat
+                                                            value={Number(insuranceTaxes).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
