@@ -1,5 +1,6 @@
 import React from "react";
 import {Card, Container} from "react-bootstrap";
+import "./bookmarks.scss";
 
 const Bookmarks = (props) => {
 

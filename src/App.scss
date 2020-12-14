@@ -37,6 +37,11 @@ body > #root > div {
   height: 100%;
 }
 
+.col-sm-11 .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .loading-container {
   height: 100vh;
 }
@@ -49,6 +54,7 @@ body > #root > div {
   @media only screen and (min-width: 481px) {
     display: block;
   }
+
 }
 
 .col-sm-11 {
@@ -58,6 +64,12 @@ body > #root > div {
   max-width: 100% !important;
   flex: 1 !important;
 
+  @media only screen and (min-width: 481px) {
+    .container-fluid {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
 }
 
 #body-row {

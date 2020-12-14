@@ -12,68 +12,62 @@ const Tax = () => {
     const schemaCollection = [
         {
             id: "19-20",
-            basicIncome: {
-                minRange: 12501,
-                maxRange: 50000,
-                rate: 20
-            },
-            highIncome: {
-                minRange: 50001,
-                maxRange: 150000,
-                rate: 40
-            },
             allowance: 12500,
-            allowanceLimit: 100000,
-            additionalRate: 45
+            basicIncomeMaxLimit: 50000,
+            highIncomeMaxLimit: 150000,
+            basicRate: 20,
+            highRate: 40,
+            additionalRate: 45,
+            allowanceLimit: 100000
         },
         {
             id: "21-22",
-            basicIncome: {
-                minRange: 12500,
-                maxRange: 50000,
-                rate: 20
-            },
-            highIncome: {
-                minRange: 50001,
-                maxRange: 150000,
-                rate: 40
-            },
             allowance: 12500,
-            allowanceLimit: 100000,
-            additionalRate: 45
+            basicIncomeMaxLimit: 50000,
+            highIncomeMaxLimit: 150000,
+            basicRate: 20,
+            highRate: 40,
+            additionalRate: 45,
+            allowanceLimit: 100000
         }
     ];
     const currency = {
         pound: "£"
     };
 
+    const taxAmount = (rate, amount) => {
+        return rate/100 * amount
+    };
     const calculateTax = (schema, income) => {
         let output, taxes, allowance;
+        taxes = 0;
         allowance = schema.allowance;
-
-        if( income <= schema.highIncome.maxRange ) {
-            if( income < schema.basicIncome.minRange ) {
-                taxes=0;
-                output = income;
-            }
-            if( income >= schema.basicIncome.minRange && income <= schema.basicIncome.maxRange ){
-                taxes = schema.basicIncome.rate/100 * income;
-                output = income - taxes;
-            }
-            if( income >= schema.highIncome.minRange && income <= schema.highIncome.maxRange ){
-                taxes = schema.highIncome.rate/100 * income;
-                output = income - taxes;
-            }
-        }else{
-            taxes = schema.additionalRate/100 * income;
-            output = income - taxes;
-        }
 
         if( income > schema.allowanceLimit) {
             const diff = income - schema.allowanceLimit;
             if( diff >= 2*allowance ) allowance = 0;
             else allowance = allowance - diff/2;
         }
+
+        if( income > schema.allowance ) {
+            if( income <= schema.basicIncomeMaxLimit ){
+                taxes = taxAmount(20, income - schema.allowance);
+            }
+            if( income > schema.basicIncomeMaxLimit && income <= schema.highIncomeMaxLimit ){
+                taxes = taxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
+                        taxAmount(40, income - schema.basicIncomeMaxLimit);
+            }
+            if( income > schema.highIncomeMaxLimit ){
+                taxes = taxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
+                        taxAmount(40, schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit) +
+                        taxAmount(45, income - schema.highIncomeMaxLimit);
+            }
+            output = income - taxes - schema.allowance + allowance;
+        } else {
+            output = income;
+        }
+
+
 
         return [output, taxes, allowance]
     };
@@ -164,28 +158,12 @@ const Tax = () => {
                                         {income.toString().length>0 && <Card>
                                             <Row>
                                                 <Col md={6}>
-                                                    <h6><small>Total taxes paid:</small></h6>
+                                                    <h6><small>Taxes paid per year:</small></h6>
                                                 </Col>
                                                 <Col md={6}>
                                                     <h3>
                                                         <NumberFormat
                                                             value={Number(taxes).toFixed(2)}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={currency.pound}
-                                                        />
-                                                    </h3>
-                                                </Col>
-                                            </Row>
-
-                                            <Row>
-                                                <Col md={6}>
-                                                    <h6><small>Total income received:</small></h6>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <h3>
-                                                        <NumberFormat
-                                                            value={Number(income).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
@@ -218,6 +196,22 @@ const Tax = () => {
                                                     <h3>
                                                         <NumberFormat
                                                             value={Number(income/12).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </h3>
+                                                </Col>
+                                            </Row>
+
+                                            <Row>
+                                                <Col md={6}>
+                                                    <h6><small>Net income per year:</small></h6>
+                                                </Col>
+                                                <Col md={6}>
+                                                    <h3>
+                                                        <NumberFormat
+                                                            value={Number(income).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
