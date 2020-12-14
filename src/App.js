@@ -48,7 +48,7 @@ const App = () => {
             show: true
         },
         {
-            pageName: "Tax Calculator",
+            pageName: "Tax",
             icon: faCalculator,
             show: true
         },
