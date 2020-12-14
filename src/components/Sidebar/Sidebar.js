@@ -27,7 +27,7 @@ const Sidebar = (props) => {
                     }}
                     onSelect={(selected) => {
                         if( selected !== 'log-in-out') {
-                            const navigateTo = '/' + selected;
+                            const navigateTo = '/' + selected.split(" ")[0];
                             if (props.location.pathname !== navigateTo) {
                                 history.push(navigateTo);
                             }

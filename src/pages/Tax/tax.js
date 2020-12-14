@@ -184,7 +184,7 @@ const Tax = () => {
                                         {income.toString().length>0 && <Card>
                                             <Row>
                                                 <Col md={6}>
-                                                    <h6><small>Taxes paid per year:</small></h6>
+                                                    <h6><small>Taxes per year:</small></h6>
                                                 </Col>
                                                 <Col md={6}>
                                                     <h3>
@@ -200,7 +200,7 @@ const Tax = () => {
 
                                             <Row>
                                                 <Col md={6}>
-                                                    <h6><small>Insurance taxes paid per year:</small></h6>
+                                                    <h6><small>Insurance taxes per year:</small></h6>
                                                 </Col>
                                                 <Col md={6}>
                                                     <h3>
