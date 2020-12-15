@@ -48,7 +48,34 @@ const Tax = () => {
         pound: "£"
     };
 
-    const taxAmount = (rate, amount) => {
+    const displayConfig = [
+        {
+            label: "Taxes per year",
+            value: incomeTaxes
+        },
+        {
+            label: "Insurance taxes per year",
+            value: insuranceTaxes
+        },
+        {
+            label: "Gross income per month",
+            value: userData.amount/12
+        },
+        {
+            label: "Net income per month",
+            value: income/12
+        },
+        {
+            label: "Net income per year",
+            value: income
+        },
+        {
+            label: "Personal allowance",
+            value: allowance
+        }
+    ];
+
+    const getTaxAmount = (rate, amount) => {
         return rate/100 * amount
     };
 
@@ -66,16 +93,16 @@ const Tax = () => {
 
         if( income > schema.allowance ) {
             if( income <= schema.basicIncomeMaxLimit ){
-                taxes = taxAmount(20, income - schema.allowance);
+                taxes = getTaxAmount(20, income - schema.allowance);
             }
             if( income > schema.basicIncomeMaxLimit && income <= schema.highIncomeMaxLimit ){
-                taxes = taxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
-                        taxAmount(40, income - schema.basicIncomeMaxLimit);
+                taxes = getTaxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
+                        getTaxAmount(40, income - schema.basicIncomeMaxLimit);
             }
             if( income > schema.highIncomeMaxLimit ){
-                taxes = taxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
-                        taxAmount(40, schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit) +
-                        taxAmount(45, income - schema.highIncomeMaxLimit);
+                taxes = getTaxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
+                        getTaxAmount(40, schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit) +
+                        getTaxAmount(45, income - schema.highIncomeMaxLimit);
             }
             output = income - taxes - schema.allowance + allowance;
         } else {
@@ -84,9 +111,9 @@ const Tax = () => {
 
         if( output >= 12*schema.insurance.lowLimit ) {
             if( output <= 12*schema.insurance.highLimit ) {
-                insuranceTax = taxAmount(12, output);
+                insuranceTax = getTaxAmount(12, output);
             }else{
-                insuranceTax = taxAmount(2, output);
+                insuranceTax = getTaxAmount(2, output);
             }
         }else{
             insuranceTax = 0;
@@ -94,7 +121,7 @@ const Tax = () => {
 
         output = output - insuranceTax;
 
-        return [output, taxes, allowance, insuranceTax]
+        return [taxes, insuranceTax, output, allowance]
     };
 
     return(<div className="tax-page-container">
@@ -169,10 +196,10 @@ const Tax = () => {
                                             onClick={(e) => {
                                                     const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
                                                     const calculate = calculateTax(schema[0], userData.amount);
-                                                    setIncome(calculate[0]);
-                                                    setIncomeTaxes(calculate[1]);
-                                                    setAllowance(calculate[2]);
-                                                    setInsuranceTaxes(calculate[3]);
+                                                    setIncomeTaxes(calculate[0]);
+                                                    setInsuranceTaxes(calculate[1]);
+                                                    setIncome(calculate[2]);
+                                                    setAllowance(calculate[3]);
                                                     e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                 }
                                             }
@@ -182,101 +209,25 @@ const Tax = () => {
                                     </Form>
                                     <div className="income-result text-center">
                                         {income.toString().length>0 && <Card>
-                                            <Row>
-                                                <Col md={6}>
-                                                    <h6><small>Taxes per year:</small></h6>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <h3>
-                                                        <NumberFormat
-                                                            value={Number(incomeTaxes).toFixed(2)}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={currency.pound}
-                                                        />
-                                                    </h3>
-                                                </Col>
-                                            </Row>
-
-                                            <Row>
-                                                <Col md={6}>
-                                                    <h6><small>Insurance taxes per year:</small></h6>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <h3>
-                                                        <NumberFormat
-                                                            value={Number(insuranceTaxes).toFixed(2)}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={currency.pound}
-                                                        />
-                                                    </h3>
-                                                </Col>
-                                            </Row>
-
-                                            <Row>
-                                                <Col md={6}>
-                                                    <h6><small>Gross income per month:</small></h6>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <h3>
-                                                        <NumberFormat
-                                                            value={Number(userData.amount/12).toFixed(2)}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={currency.pound}
-                                                        />
-                                                    </h3>
-                                                </Col>
-                                            </Row>
-
-                                            <Row>
-                                                <Col md={6}>
-                                                    <h6><small>Net income per month:</small></h6>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <h3>
-                                                        <NumberFormat
-                                                            value={Number(income/12).toFixed(2)}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={currency.pound}
-                                                        />
-                                                    </h3>
-                                                </Col>
-                                            </Row>
-
-                                            <Row>
-                                                <Col md={6}>
-                                                    <h6><small>Net income per year:</small></h6>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <h3>
-                                                        <NumberFormat
-                                                            value={Number(income).toFixed(2)}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={currency.pound}
-                                                        />
-                                                    </h3>
-                                                </Col>
-                                            </Row>
-
-                                            <Row>
-                                                <Col md={6}>
-                                                    <h6><small>Personal allowance per year:</small></h6>
-                                                </Col>
-                                                <Col md={6}>
-                                                    <h3>
-                                                        <NumberFormat
-                                                            value={Number(allowance).toFixed(2)}
-                                                            displayType={'text'}
-                                                            thousandSeparator={true}
-                                                            prefix={currency.pound}
-                                                        />
-                                                    </h3>
-                                                </Col>
-                                            </Row>
+                                            {
+                                                displayConfig.map((item, index)=>(
+                                                    <Row key={index}>
+                                                        <Col md={6}>
+                                                            <h6><small>{item.label}</small></h6>
+                                                        </Col>
+                                                        <Col md={6}>
+                                                            <h3>
+                                                                <NumberFormat
+                                                                    value={Number(item.value).toFixed(2)}
+                                                                    displayType={'text'}
+                                                                    thousandSeparator={true}
+                                                                    prefix={currency.pound}
+                                                                />
+                                                            </h3>
+                                                        </Col>
+                                                    </Row>
+                                                ))
+                                            }
                                         </Card>}
                                     </div>
                                 </Card>
