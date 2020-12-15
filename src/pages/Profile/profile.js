@@ -1,6 +1,7 @@
 import React from "react";
 import {Container, Card, Row, Col} from "react-bootstrap";
 import {useAuth0} from "@auth0/auth0-react";
+import "./profile.scss";
 
 
 const Profile = () => {

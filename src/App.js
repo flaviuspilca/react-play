@@ -15,16 +15,23 @@ import ProtectedRoute from "./auth/protected-route";
 import "./App.scss";
 
 export const HomeContext = createContext();
+export const SidebarContext = createContext();
 
-function reducer(state, item) {
+
+function setFavouritesReducer(state, item) {
     return [...state, item]
+}
+
+function setCurrentLocationReducer(state, item) {
+    return item
 }
 
 const App = () => {
     const {isAuthenticated, isLoading} = useAuth0();
     const history = useHistory();
     const location = useLocation();
-    const [favs, setFavs] = useReducer(reducer, []);
+    const [favs, setFavs] = useReducer(setFavouritesReducer, []);
+    const [currentLocation, setCurrentLocation] = useReducer(setCurrentLocationReducer, "");
 
     const navigationConfig = [
         {
@@ -66,10 +73,12 @@ const App = () => {
         <HomeContext.Provider value={{favs, setFavs}}>
             <div id="body-row" className="row no-gutters">
                 <div className="col-sm-1">
-                    <Sidebar location={location} history={history} config={navigationConfig}/>
+                    <SidebarContext.Provider value={{currentLocation, setCurrentLocation}}>
+                        <Sidebar location={location} history={history} config={navigationConfig}/>
+                    </SidebarContext.Provider>
                 </div>
                 <div className="col-sm-11">
-                    <Navbar location={location} history={history} config={navigationConfig}/>
+                    <Navbar location={location} currentLocation={currentLocation} history={history} config={navigationConfig}/>
                     <main role="main" className="container-fluid flex-grow-1 overflow-auto">
                         <Switch>
                             <Route path="/"

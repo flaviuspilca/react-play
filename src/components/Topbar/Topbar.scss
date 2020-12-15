@@ -1,5 +1,12 @@
 .nav-container {
-  background-color: #FADBD8;
+  background-color: transparent;
+  box-shadow:
+    0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048),
+    0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+    0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+    0 100px 80px rgba(0, 0, 0, 0.12);
 
   .navbar-toggler, .navbar-toggler:focus {
     border: none;
@@ -11,26 +18,35 @@
     padding: 0;
   }
 
-  .image-logo {
-    height: 30px;
-    width: 31px;
-    background-size: contain;
-    background-image: url('../../images/github.png');
-    display: inline-block;
-  }
-
-  .navbar-light .navbar-text {
+  .app-title h3, .navbar-text h3 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 0;
+    display: inherit;
     color: #85929E;
   }
 
-  .navbar-brand.app-name, .navbar-text {
+  .app-title h3 {
+    text-transform: capitalize;
+  }
+
+  .image-logo, .navbar-text {
     display: none;
   }
 
   .navbar-nav a {
     position: relative;
-    background: #FADBD8;
+    background: transparent;
     color: #85929E;
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 300;
+      line-height: 1;
+      margin-bottom: 0;
+      padding-left: 15px;
+      color: #85929E;
+    }
   }
 
   #responsive-navbar-nav {
@@ -38,20 +54,14 @@
   }
 
   .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
-    background: #D98880;
+    opacity: 0.3;
+    background-color: #FDEDEC;
+    font-weight: 900;
   }
 
   .rounded-circle {
     width: 2rem;
     height: 2rem;
-  }
-
-  .image-logo {
-    position: absolute;
-  }
-
-  .app-title {
-    margin-left: 35px;
   }
 
   @media (min-width: 481px) {
@@ -63,6 +73,19 @@
     .navbar-light .navbar-brand {
       display: block;
       color: #85929E;
+    }
+
+    .image-logo {
+      position: absolute;
+      height: 30px;
+      width: 31px;
+      background-size: contain;
+      background-image: url('../../images/github.png');
+      display: inline-block;
+    }
+
+    .app-title {
+      margin-left: 35px;
     }
   }
 

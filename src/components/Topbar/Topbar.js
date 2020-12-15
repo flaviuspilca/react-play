@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {useHistory} from "react-router-dom";
 import {Nav, Navbar} from "react-bootstrap";
 import {useAuth0} from "@auth0/auth0-react";
@@ -6,8 +6,8 @@ import "./Topbar.scss";
 
 const Topbar = (props) => {
     const {isAuthenticated, loginWithRedirect, logout, user} = useAuth0();
+    const [currentPage, setCurrentPage] = useState(props.currentLocation || props.location.pathname.slice(1) || "Home");
     const history = useHistory();
-
     return (
     <div className="nav-container">
         <Navbar expand="lg"
@@ -16,6 +16,7 @@ const Topbar = (props) => {
                 onSelect={(selected) => {
                 if( selected !== 'log-in-out') {
                     const navigateTo = '/' + selected;
+                    setCurrentPage(selected);
                     if (props.location.pathname !== navigateTo) {
                         history.push(navigateTo);
                     }
@@ -29,14 +30,20 @@ const Topbar = (props) => {
                     }
                 }
             }}>
-            <Navbar.Brand className="app-name" href="https://github.com/flaviuspilca/react-play" target="_blanc">
-                <span className="image-logo"></span>
-                <span className="app-title">The Playground</span>
-            </Navbar.Brand>
 
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+
+            <Navbar.Brand className="app-name">
+                <a href="https://github.com/flaviuspilca/react-play" target="_blanc"><span className="image-logo"></span></a>
+                <span className="app-title"><h3>{currentPage === props.location.pathname.slice(1).toLowerCase() ? currentPage : props.currentLocation || "Home"}</h3></span>
+            </Navbar.Brand>
+
             <Nav className="ml-auto">
-                <Navbar.Text>{isAuthenticated ? "Welcome " + user.name : "Welcome! You are not logged in"}</Navbar.Text>
+                <Navbar.Text>
+                    <h3>
+                        {isAuthenticated ? "Welcome " + user.name : "Welcome! You are not logged in!"}
+                    </h3>
+                </Navbar.Text>
             </Nav>
             {isAuthenticated && <Navbar.Brand>
                 <img
@@ -55,7 +62,7 @@ const Topbar = (props) => {
                                 href="#"
                                 eventKey={item.pageName.toLowerCase()}
                             >
-                                {item.pageName.toLowerCase() === "log-in-out" ?  (isAuthenticated ? "Log Out" : "Log In") : item.pageName}
+                                <h3>{item.pageName.toLowerCase() === "log-in-out" ?  (isAuthenticated ? "Log Out" : "Log In") : item.pageName}</h3>
                             </Nav.Link> : ""
                         ))
                     }

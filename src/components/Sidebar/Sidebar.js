@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {useHistory} from "react-router-dom";
 import SideNav, {NavItem, NavIcon, NavText} from "@trendmicro/react-sidenav";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {useAuth0} from "@auth0/auth0-react";
 import ClickOutside from "react-click-outside";
 import "@trendmicro/react-sidenav/dist/react-sidenav.css";
+import {SidebarContext} from "../../App";
 import "./Sidebar.scss";
 
 
@@ -12,6 +13,7 @@ const Sidebar = (props) => {
     const {isAuthenticated, loginWithRedirect, logout} = useAuth0();
     const history = useHistory();
     const [expanded, setExpanded] = useState(false);
+    const {currentLocation, setCurrentLocation} = useContext(SidebarContext);
 
     return(
         <div className="sidebar-container">
@@ -28,6 +30,7 @@ const Sidebar = (props) => {
                     onSelect={(selected) => {
                         if( selected !== 'log-in-out') {
                             const navigateTo = '/' + selected;
+                            setCurrentLocation(selected);
                             if (props.location.pathname !== navigateTo) {
                                 history.push(navigateTo);
                             }
