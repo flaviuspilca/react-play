@@ -141,96 +141,94 @@ const Tax = () => {
 
                             </Col>
                             <Col md={8}>
-                                <Card className="shadow p-3 bg-white rounded tax-calculator">
-                                    <h6>This widget will help you better project your monthly net income.</h6>
-                                    <p>To use this calculator you need to fill in the below two fields, representing the desired annual gross income and the fiscal year to refer the calculation.</p>
-                                    <Form>
-                                        <Form.Group controlId="incomeField">
-                                            <InputGroup className="mb-2 mr-sm-2">
-                                                <Form.Control
-                                                    className="shadow-none"
-                                                    type="number"
-                                                    placeholder="Insert your income"
-                                                    onChange={(e)=>{
-                                                        const string = e.currentTarget.value.toString();
-                                                        if( string.charAt(0) === "0" ) {
-                                                            e.currentTarget.value = string.substring(1,string.length);
-                                                        }
-                                                        if( string.length > 10 ) {
-                                                            e.currentTarget.value = string.substring(0,10);
-                                                        }
-                                                        setIncome("");
-                                                        setUserData({
-                                                            amount: e.currentTarget.value,
-                                                            year: userData.year
-                                                        })
-                                                        }
-                                                    }
-                                                />
-                                                <InputGroup.Append>
-                                                    <InputGroup.Text>{currency.pound}</InputGroup.Text>
-                                                </InputGroup.Append>
-                                            </InputGroup>
-                                        </Form.Group>
-                                        <Form.Group controlId="yearField">
+                                <h6>This widget will help you better project your monthly net income.</h6>
+                                <p>To use this calculator you need to fill in the below two fields, representing the desired annual gross income and the fiscal year to refer the calculation.</p>
+                                <Form>
+                                    <Form.Group controlId="incomeField">
+                                        <InputGroup className="mb-2 mr-sm-2">
                                             <Form.Control
-                                                as="select"
                                                 className="shadow-none"
+                                                type="number"
+                                                placeholder="Insert your income"
                                                 onChange={(e)=>{
+                                                    const string = e.currentTarget.value.toString();
+                                                    if( string.charAt(0) === "0" ) {
+                                                        e.currentTarget.value = string.substring(1,string.length);
+                                                    }
+                                                    if( string.length > 10 ) {
+                                                        e.currentTarget.value = string.substring(0,10);
+                                                    }
                                                     setIncome("");
                                                     setUserData({
-                                                        amount: userData.amount,
-                                                        year: e.currentTarget.value
+                                                        amount: e.currentTarget.value,
+                                                        year: userData.year
                                                     })
-                                                    }
                                                 }
-                                            >
-                                                <option value="-">Please select a year</option>
-                                                <option value="19-20">2019-2020</option>
-                                                <option value="20-21">2020-2021</option>
-                                            </Form.Control>
-                                        </Form.Group>
-                                        <Button
-                                            className="button-calculate btn btn-primary btn-block shadow-none"
-                                            disabled={Number(userData.amount) === 0 || userData.year.length !== 5}
-                                            onClick={(e) => {
-                                                    const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
-                                                    const calculate = calculateTax(schema[0], userData.amount);
-                                                    setIncomeTaxes(calculate[0]);
-                                                    setInsuranceTaxes(calculate[1]);
-                                                    setIncome(calculate[2]);
-                                                    setAllowance(calculate[3]);
-                                                    e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                 }
+                                            />
+                                            <InputGroup.Append>
+                                                <InputGroup.Text>{currency.pound}</InputGroup.Text>
+                                            </InputGroup.Append>
+                                        </InputGroup>
+                                    </Form.Group>
+                                    <Form.Group controlId="yearField">
+                                        <Form.Control
+                                            as="select"
+                                            className="shadow-none"
+                                            onChange={(e)=>{
+                                                setIncome("");
+                                                setUserData({
+                                                    amount: userData.amount,
+                                                    year: e.currentTarget.value
+                                                })
+                                            }
                                             }
                                         >
-                                            <h3>Calculate</h3>
-                                        </Button>
-                                    </Form>
-                                    <div className="income-result text-center">
-                                        {income.toString().length>0 && <Card>
-                                            {
-                                                displayConfig.map((item, index)=>(
-                                                    <Row key={index}>
-                                                        <Col md={6}>
-                                                            <h6><small>{item.label}</small></h6>
-                                                        </Col>
-                                                        <Col md={6}>
-                                                            <h3>
-                                                                <NumberFormat
-                                                                    value={Number(item.value).toFixed(2)}
-                                                                    displayType={'text'}
-                                                                    thousandSeparator={true}
-                                                                    prefix={currency.pound}
-                                                                />
-                                                            </h3>
-                                                        </Col>
-                                                    </Row>
-                                                ))
-                                            }
-                                        </Card>}
-                                    </div>
-                                </Card>
+                                            <option value="-">Please select a year</option>
+                                            <option value="19-20">2019-2020</option>
+                                            <option value="20-21">2020-2021</option>
+                                        </Form.Control>
+                                    </Form.Group>
+                                    <Button
+                                        className="button-calculate btn btn-primary btn-block shadow-none"
+                                        disabled={Number(userData.amount) === 0 || userData.year.length !== 5}
+                                        onClick={(e) => {
+                                            const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
+                                            const calculate = calculateTax(schema[0], userData.amount);
+                                            setIncomeTaxes(calculate[0]);
+                                            setInsuranceTaxes(calculate[1]);
+                                            setIncome(calculate[2]);
+                                            setAllowance(calculate[3]);
+                                            e.currentTarget.parentElement.querySelector('.button-calculate').blur();
+                                        }
+                                        }
+                                    >
+                                        <h3>Calculate</h3>
+                                    </Button>
+                                </Form>
+                                <div className="income-result text-center">
+                                    {income.toString().length>0 && <Card>
+                                        {
+                                            displayConfig.map((item, index)=>(
+                                                <Row key={index}>
+                                                    <Col md={6}>
+                                                        <h6><small>{item.label}</small></h6>
+                                                    </Col>
+                                                    <Col md={6}>
+                                                        <h3>
+                                                            <NumberFormat
+                                                                value={Number(item.value).toFixed(2)}
+                                                                displayType={'text'}
+                                                                thousandSeparator={true}
+                                                                prefix={currency.pound}
+                                                            />
+                                                        </h3>
+                                                    </Col>
+                                                </Row>
+                                            ))
+                                        }
+                                    </Card>}
+                                </div>
                             </Col>
                             <Col md={2}>
 
