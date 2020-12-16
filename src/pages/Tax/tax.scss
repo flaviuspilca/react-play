@@ -48,7 +48,7 @@
     opacity: 0.65;
   }
 
-  .see-details {
+  .nav-button {
     button {
       background-color: #D2B4DE;
       -webkit-border-radius: 0;
@@ -61,7 +61,7 @@
       box-shadow: none;
     }
 
-    .see-details-card {
+    .nav-button-card {
       border: none;
     }
 
@@ -71,17 +71,17 @@
       color: #566573;
     }
 
-    .see-details-arrow {
+    .nav-button-arrow {
       display: none;
     }
   }
 
 
   @media (min-width: 768px) {
-    .see-details {
+    .nav-button {
       height: 100%;
 
-      .see-details-card {
+      .nav-button-card {
         border: none;
         height: 100%;
         background: transparent;
@@ -93,6 +93,7 @@
         bottom: 0;
         left: 0;
         right: 0;
+        height: 48px;
         background-color: #D2B4DE;
         border: none;
         margin: auto;
@@ -105,7 +106,7 @@
         display: none;
       }
 
-      .see-details-arrow {
+      .nav-button-arrow {
         display: block;
       }
     }

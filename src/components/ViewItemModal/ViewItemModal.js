@@ -11,13 +11,13 @@ const ViewItemModal = (props) => {
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
-            <Modal.Header closeButton>
+            {props.data.title && <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
                     {props.data.title}
                 </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <p>{props.data.content}</p>
+            </Modal.Header>}
+            <Modal.Body className="text-center">
+                <span>{props.data.content}</span>
                 {props.data.author && <span className="text-left font-italic">by: {props.data.author}</span>}
             </Modal.Body>
             <Modal.Footer>
