@@ -13,7 +13,6 @@ const Sidebar = (props) => {
     const {isAuthenticated, loginWithRedirect, logout} = useAuth0();
     const history = useHistory();
     const [expanded, setExpanded] = useState(false);
-    const {currentLocation, setCurrentLocation} = useContext(SidebarContext);
 
     return(
         <div className="sidebar-container">
@@ -30,7 +29,6 @@ const Sidebar = (props) => {
                     onSelect={(selected) => {
                         if( selected !== 'log-in-out') {
                             const navigateTo = '/' + selected;
-                            setCurrentLocation(selected);
                             if (props.location.pathname !== navigateTo) {
                                 history.push(navigateTo);
                             }

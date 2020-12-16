@@ -7,7 +7,6 @@
     padding-right: 0;
   }
 
-
   .button-calculate, .button-calculate:hover {
     background-color: #D98880;
     border: none;
@@ -76,6 +75,17 @@
     }
   }
 
+  .top {
+    display: none;
+  }
+
+  .main-screen, .second-screen {
+    display: none;
+  }
+
+  .details-item {
+    background-color: #F2D7D5 !important;
+  }
 
   @media (min-width: 768px) {
     .nav-button {
@@ -111,5 +121,12 @@
       }
     }
 
+    .left {
+      display: none;
+    }
+
+    .top {
+      display: block;
+    }
   }
 }

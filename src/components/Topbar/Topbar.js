@@ -35,7 +35,7 @@ const Topbar = (props) => {
 
             <Navbar.Brand className="app-name">
                 <a href="https://github.com/flaviuspilca/react-play" target="_blanc"><span className="image-logo"></span></a>
-                <span className="app-title"><h3>{currentPage === props.location.pathname.slice(1).toLowerCase() ? currentPage : props.currentLocation || "Home"}</h3></span>
+                <span className="app-title"><h3>{currentPage === props.location.pathname.slice(1).toLowerCase() ? currentPage : props.currentLocation || "Home"} page</h3></span>
             </Navbar.Brand>
 
             <Nav className="ml-auto">

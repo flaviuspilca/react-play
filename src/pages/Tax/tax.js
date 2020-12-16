@@ -14,6 +14,7 @@ const Tax = () => {
     const [incomeTaxes, setIncomeTaxes] = useState("");
     const [insuranceTaxes, setInsuranceTaxes] = useState("");
     const [userData, setUserData] = useState({amount: "", year: ""});
+    const [taxSplits, setTaxSplits] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showFirstScreen, setShowFirstScreen] = useState(true);
     const schemaCollection = [
@@ -76,6 +77,21 @@ const Tax = () => {
             value: allowance
         }
     ];
+    let calculatedData = {};
+
+    const navigationButton = (direction) => (
+        <Card className="nav-button-card">
+            <Button variant="btn-primary btn-circle btn-lg"
+                    onClick={()=>{
+                            setShowFirstScreen(!showFirstScreen);
+                        }
+                    }
+            >
+                <h3>{showFirstScreen ? "Click to see details" : "Go back to main screen"}</h3>
+                <FontAwesomeIcon className="nav-button-arrow" style={{color: '#566573'}} icon={direction} />
+            </Button>
+        </Card>
+    );
 
     return(<div className="tax-page-container">
         <section className="content">
@@ -91,24 +107,15 @@ const Tax = () => {
                     <Card.Body className="d-flex flex-column">
                         <Row>
                             <Col md={2}>
-                                <div className="nav-button">
-                                    {income.toString().length>0 && !showFirstScreen && <Card className="nav-button-card">
-                                        <Button variant="btn-primary btn-circle btn-lg"
-                                                onClick={()=>{
-                                                    setShowFirstScreen(true);
-                                                }
-                                                }
-                                        >
-                                            <h3>Click to see details</h3>
-                                            <FontAwesomeIcon className="nav-button-arrow" style={{color: '#566573'}} icon={faArrowLeft} />
-                                        </Button>
-                                    </Card>
-                                    }
-                                </div>
+                                {income.toString().length>0 && !showFirstScreen &&
+                                    <div className="nav-button top">
+                                        {navigationButton(faArrowLeft)}
+                                    </div>
+                                }
                             </Col>
                             <Col md={8}>
                                 <Fade in={showFirstScreen}>
-                                    <div className="main-screen">
+                                    <div className={!showFirstScreen ? "main-screen" : ""}>
                                         <h6>This widget will help you better project your monthly net income.</h6>
                                         <p>To use this calculator you need to fill in the below two fields, representing the desired annual gross income and the fiscal year to refer the calculation.</p>
                                         <Form>
@@ -164,11 +171,13 @@ const Tax = () => {
                                                         setShowModal(true);
                                                     }else{
                                                         const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
-                                                        const calculate = calculateTax(schema[0], userData.amount);
-                                                        setIncomeTaxes(calculate[0]);
-                                                        setInsuranceTaxes(calculate[1]);
-                                                        setIncome(calculate[2]);
-                                                        setAllowance(calculate[3]);
+                                                        calculatedData = calculateTax(schema[0], userData.amount);
+                                                        console.log(calculatedData)
+                                                        setIncomeTaxes(calculatedData.taxes);
+                                                        setInsuranceTaxes(calculatedData.insuranceTax);
+                                                        setIncome(calculatedData.output);
+                                                        setAllowance(calculatedData.allowance);
+                                                        setTaxSplits(calculatedData.taxSplits);
                                                         e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                     }
                                                 }
@@ -203,34 +212,80 @@ const Tax = () => {
                                     </div>
                                 </Fade>
                                 <Fade in={!showFirstScreen}>
-                                    <div className="second-screen">
+                                    <div className={showFirstScreen ? "second-screen" : ""}>
                                         <div className="income-result text-center">
                                             {income.toString().length>0 && <Card>
-                                                <Row>
+                                                <Row className="details-item">
                                                     <Col>
-                                                        {income}
+                                                        Below you can see the calculation scheme applied on your income
                                                     </Col>
                                                 </Row>
+                                                <Row>
+                                                    <Col>
+                                                        Gross salary:
+                                                    </Col>
+                                                    <Col>
+                                                        <NumberFormat
+                                                            value={Number(income).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col>
+                                                        Personal allowance:
+                                                    </Col>
+                                                    <Col>
+                                                        {allowance}{currency.pound}
+                                                    </Col>
+                                                </Row>
+                                                <Row className="details-item">
+                                                    Based on the existing laws, your gross income will be split into the following intervals. A different tax rate will then be applied on each interval.
+                                                </Row>
+                                                <Row>
+                                                    <Col>Amount</Col>
+                                                    <Col>Rate applied</Col>
+                                                    <Col>Value:</Col>
+                                                </Row>
+                                                {taxSplits.map((item, index)=>(
+                                                    <Row key={index}>
+                                                        <Col>
+                                                            <NumberFormat
+                                                                value={Number(item.amount).toFixed(2)}
+                                                                displayType={'text'}
+                                                                thousandSeparator={true}
+                                                                prefix={currency.pound}
+                                                            />
+                                                        </Col>
+                                                        <Col>{item.rate}%</Col>
+                                                        <Col>
+                                                            <NumberFormat
+                                                                value={Number(item.value).toFixed(2)}
+                                                                displayType={'text'}
+                                                                thousandSeparator={true}
+                                                                prefix={currency.pound}
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                ))}
                                             </Card>}
                                         </div>
                                     </div>
                                 </Fade>
                             </Col>
                             <Col md={2}>
-                                <div className="nav-button">
-                                    {income.toString().length>0 && showFirstScreen && <Card className="nav-button-card">
-                                        <Button variant="btn-primary btn-circle btn-lg"
-                                                onClick={()=>{
-                                                        setShowFirstScreen(false);
-                                                    }
-                                                }
-                                        >
-                                            <h3>Click to see details</h3>
-                                            <FontAwesomeIcon className="nav-button-arrow" style={{color: '#566573'}} icon={faArrowRight} />
-                                        </Button>
-                                    </Card>
-                                    }
-                                </div>
+                                {income.toString().length>0 && !showFirstScreen &&
+                                    <div className="nav-button bottom left">
+                                        {navigationButton(faArrowLeft)}
+                                    </div>
+                                }
+                                {income.toString().length>0 && showFirstScreen &&
+                                    <div className="nav-button bottom right">
+                                        {navigationButton(faArrowRight)}
+                                    </div>
+                                }
                             </Col>
                         </Row>
                     </Card.Body>

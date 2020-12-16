@@ -31,7 +31,8 @@ export function calculateTax(schema, income) {
         allowance = schema.allowance,
         insuranceTax = 0,
         taxes = 0,
-        getSplits;
+        getSplits,
+        taxSplits = [];
 
     // calculate the allowance upon which I will set afterwards the income breakdown splits
     if( income > schema.allowanceLimit) {
@@ -44,9 +45,8 @@ export function calculateTax(schema, income) {
 
     // calculate the sum of all taxes applied on the income
     if( getSplits.length > 0 ) {
-        taxes = getSplits
-            .map((item, index) => schema.rates[index] / 100 * item) // get an array of tax values applied differently on each of the income breakdown
-            .reduce((accumulator, currentValue) => accumulator + currentValue); // sum up all these taxes to get the total
+        taxSplits = getSplits.map((item, index) => schema.rates[index] / 100 * item); // get an array of tax values applied differently on each of the income breakdown
+        taxes = taxSplits.reduce((accumulator, currentValue) => accumulator + currentValue); // sum up all these taxes to get the total
     }
 
     // calculate remaining income after applying taxes
@@ -66,5 +66,22 @@ export function calculateTax(schema, income) {
     // calculate final income after applying insurance tax
     output = output - insuranceTax;
 
-    return [taxes, insuranceTax, output, allowance]
+    if( getSplits.length === 0 ) {
+        getSplits[0] = income;
+        taxSplits[0] = income;
+    }
+
+    return {
+        taxes: taxes,
+        insuranceTax: insuranceTax,
+        output: output,
+        allowance: allowance,
+        taxSplits: taxSplits.map((item, index)=>(
+            {
+                amount: getSplits[index],
+                rate: schema.rates[index],
+                value: item
+            }
+        ))
+    }
 }
