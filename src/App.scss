@@ -76,6 +76,10 @@ body > #root > div {
       0 100px 80px rgba(0, 0, 0, 0.12);
   }
 
+  .content .container .card .see-details-card {
+    box-shadow: none
+  }
+
   @media only screen and (min-width: 481px) {
     .container-fluid {
       padding-left: 15px;

@@ -1,7 +1,10 @@
 import React, {useState} from "react";
 import {Container, Card, Row, Col, Form, Button, InputGroup} from "react-bootstrap";
+import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import NumberFormat from 'react-number-format';
 import "./tax.scss";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {NavIcon} from "@trendmicro/react-sidenav";
 
 const Tax = () => {
 
@@ -16,9 +19,7 @@ const Tax = () => {
             allowance: 12500,
             basicIncomeMaxLimit: 50000,
             highIncomeMaxLimit: 150000,
-            basicRate: 20,
-            highRate: 40,
-            additionalRate: 45,
+            rates: [20, 40, 45],
             allowanceLimit: 100000,
             insurance: {
                 lowLimit: 719,
@@ -32,9 +33,7 @@ const Tax = () => {
             allowance: 12500,
             basicIncomeMaxLimit: 50000,
             highIncomeMaxLimit: 150000,
-            basicRate: 20,
-            highRate: 40,
-            additionalRate: 45,
+            rates: [20, 40, 45],
             allowanceLimit: 100000,
             insurance: {
                 lowLimit: 792,
@@ -74,51 +73,73 @@ const Tax = () => {
             value: allowance
         }
     ];
+    
+    const breakdownIncome = (schema, income, allowance) => {
+        let splits = [];
 
-    const getTaxAmount = (rate, amount) => {
-        return rate/100 * amount
+        if( income/schema.highIncomeMaxLimit > 1 ) {
+            splits[0] = income - schema.highIncomeMaxLimit;
+            splits[1] = schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit;
+            splits[2] = schema.basicIncomeMaxLimit - allowance;
+        }else{
+            if( income/schema.basicIncomeMaxLimit > 1 ) {
+                splits[0] = income - schema.basicIncomeMaxLimit;
+                if( income/schema.allowanceLimit > 1 ) {
+                    splits[1] = schema.basicIncomeMaxLimit - allowance;
+                }else{
+                    splits[1] = schema.basicIncomeMaxLimit - schema.allowance;
+                }
+            }else{
+                if( income/schema.allowance > 1 ) {
+                    splits[0] = income - schema.allowance;
+                }else{
+                    splits = [];
+                }
+            }
+        }
+        splits = splits.reverse();
+
+        return splits
     };
 
     const calculateTax = (schema, income) => {
-        let output, taxes, allowance, insuranceTax;
-        taxes = 0;
-        insuranceTax = 0;
-        allowance = schema.allowance;
+        let output,
+            allowance = schema.allowance,
+            insuranceTax = 0,
+            taxes = 0,
+            getSplits;
 
+        // calculate the allowance upon which I will set afterwards the income breakdown splits
         if( income > schema.allowanceLimit) {
             const diff = income - schema.allowanceLimit;
             if( diff >= 2*allowance ) allowance = 0;
             else allowance = allowance - diff/2;
         }
 
-        if( income > schema.allowance ) {
-            if( income <= schema.basicIncomeMaxLimit ){
-                taxes = getTaxAmount(20, income - schema.allowance);
-            }
-            if( income > schema.basicIncomeMaxLimit && income <= schema.highIncomeMaxLimit ){
-                taxes = getTaxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
-                        getTaxAmount(40, income - schema.basicIncomeMaxLimit);
-            }
-            if( income > schema.highIncomeMaxLimit ){
-                taxes = getTaxAmount(20, schema.basicIncomeMaxLimit - schema.allowance) +
-                        getTaxAmount(40, schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit) +
-                        getTaxAmount(45, income - schema.highIncomeMaxLimit);
-            }
-            output = income - taxes - schema.allowance + allowance;
-        } else {
-            output = income;
+        getSplits = breakdownIncome(schema, income, allowance);
+
+        // calculate the sum of all taxes applied on the income
+        if( getSplits.length > 0 ) {
+            taxes = getSplits
+                .map((item, index) => schema.rates[index] / 100 * item) // get an array of tax values applied differently on each of the income breakdown
+                .reduce((accumulator, currentValue) => accumulator + currentValue); // sum up all these taxes to get the total
         }
 
+        // calculate remaining income after applying taxes
+        output = income - taxes - schema.allowance + allowance;
+
+        // calculate insurance tax
         if( output >= 12*schema.insurance.lowLimit ) {
             if( output <= 12*schema.insurance.highLimit ) {
-                insuranceTax = getTaxAmount(12, output);
+                insuranceTax = schema.insurance.lowRate/100 * output;
             }else{
-                insuranceTax = getTaxAmount(2, output);
+                insuranceTax = schema.insurance.highRate/100 * output;
             }
         }else{
             insuranceTax = 0;
         }
 
+        // calculate final income after applying insurance tax
         output = output - insuranceTax;
 
         return [taxes, insuranceTax, output, allowance]
@@ -135,7 +156,7 @@ const Tax = () => {
                             </Col>
                         </Row>
                     </Card.Header>
-                    <Card.Body>
+                    <Card.Body className="d-flex flex-column">
                         <Row>
                             <Col md={2}>
 
@@ -231,7 +252,15 @@ const Tax = () => {
                                 </div>
                             </Col>
                             <Col md={2}>
-
+                                <div className="see-details">
+                                    {income.toString().length>0 && <Card className="see-details-card">
+                                        <Button variant="btn-primary btn-circle btn-lg">
+                                            <h3>Click to see details</h3>
+                                            <FontAwesomeIcon className="see-details-arrow" style={{color: '#566573'}} icon={faArrowRight} />
+                                        </Button>
+                                    </Card>
+                                    }
+                                </div>
                             </Col>
                         </Row>
                     </Card.Body>
