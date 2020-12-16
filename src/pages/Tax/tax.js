@@ -15,6 +15,7 @@ const Tax = () => {
     const [insuranceTaxes, setInsuranceTaxes] = useState("");
     const [userData, setUserData] = useState({amount: "", year: ""});
     const [taxSplits, setTaxSplits] = useState([]);
+    const [initialAllowance, setInitialAllowance] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [showFirstScreen, setShowFirstScreen] = useState(true);
     const schemaCollection = [
@@ -26,9 +27,9 @@ const Tax = () => {
             rates: [20, 40, 45],
             allowanceLimit: 100000,
             insurance: {
-                lowLimit: 719,
+                lowLimit: 12*719,
                 lowRate: 12,
-                highLimit: 4167,
+                highLimit: 12*4167,
                 highRate: 2
             }
         },
@@ -40,9 +41,9 @@ const Tax = () => {
             rates: [20, 40, 45],
             allowanceLimit: 100000,
             insurance: {
-                lowLimit: 792,
+                lowLimit: 12*792,
                 lowRate: 12,
-                highLimit: 4167,
+                highLimit: 12*4167,
                 highRate: 2
             }
         }
@@ -54,27 +55,33 @@ const Tax = () => {
     const displayConfig = [
         {
             label: "Taxes per year",
-            value: incomeTaxes
+            value: incomeTaxes,
+            customClass: ""
         },
         {
             label: "Insurance taxes per year",
-            value: insuranceTaxes
+            value: insuranceTaxes,
+            customClass: ""
         },
         {
             label: "Gross income per month",
-            value: userData.amount/12
+            value: userData.amount/12,
+            customClass: ""
         },
         {
             label: "Net income per month",
-            value: income/12
+            value: income/12,
+            customClass: "income-per-month"
         },
         {
             label: "Net income per year",
-            value: income
+            value: income,
+            customClass: ""
         },
         {
             label: "Personal allowance",
-            value: allowance
+            value: allowance,
+            customClass: ""
         }
     ];
     let calculatedData = {};
@@ -82,9 +89,10 @@ const Tax = () => {
     const navigationButton = (direction) => (
         <Card className="nav-button-card">
             <Button variant="btn-primary btn-circle btn-lg"
-                    onClick={()=>{
+                    onClick={(e)=>{
                             setShowFirstScreen(!showFirstScreen);
-                        }
+                            e.currentTarget.parentElement.querySelector('.btn-circle').blur();
+                    }
                     }
             >
                 <h3>{showFirstScreen ? "Click to see details" : "Go back to main screen"}</h3>
@@ -172,10 +180,10 @@ const Tax = () => {
                                                     }else{
                                                         const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
                                                         calculatedData = calculateTax(schema[0], userData.amount);
-                                                        console.log(calculatedData)
                                                         setIncomeTaxes(calculatedData.taxes);
                                                         setInsuranceTaxes(calculatedData.insuranceTax);
                                                         setIncome(calculatedData.output);
+                                                        setInitialAllowance(calculatedData.initialAllowance);
                                                         setAllowance(calculatedData.allowance);
                                                         setTaxSplits(calculatedData.taxSplits);
                                                         e.currentTarget.parentElement.querySelector('.button-calculate').blur();
@@ -190,7 +198,7 @@ const Tax = () => {
                                             {income.toString().length>0 && <Card>
                                                 {
                                                     displayConfig.map((item, index)=>(
-                                                        <Row key={index}>
+                                                        <Row key={index} className={item.customClass}>
                                                             <Col md={6}>
                                                                 <h6><small>{item.label}</small></h6>
                                                             </Col>
@@ -216,17 +224,17 @@ const Tax = () => {
                                         <div className="income-result text-center">
                                             {income.toString().length>0 && <Card>
                                                 <Row className="details-item">
-                                                    <Col>
+                                                    <Col md={12}>
                                                         Below you can see the calculation scheme applied on your income
                                                     </Col>
                                                 </Row>
                                                 <Row>
-                                                    <Col>
+                                                    <Col md={6}>
                                                         Gross salary:
                                                     </Col>
-                                                    <Col>
+                                                    <Col md={6}>
                                                         <NumberFormat
-                                                            value={Number(income).toFixed(2)}
+                                                            value={Number(userData.amount).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
@@ -234,11 +242,21 @@ const Tax = () => {
                                                     </Col>
                                                 </Row>
                                                 <Row>
-                                                    <Col>
+                                                    <Col md={6}>
                                                         Personal allowance:
                                                     </Col>
-                                                    <Col>
-                                                        {allowance}{currency.pound}
+                                                    <Col md={6}>
+                                                        <NumberFormat
+                                                            value={Number(initialAllowance).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        /> reduced to <NumberFormat
+                                                            value={Number(allowance).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        />
                                                     </Col>
                                                 </Row>
                                                 <Row className="details-item">
@@ -246,8 +264,8 @@ const Tax = () => {
                                                 </Row>
                                                 <Row>
                                                     <Col>Amount</Col>
-                                                    <Col>Rate applied</Col>
-                                                    <Col>Value:</Col>
+                                                    <Col>Rate</Col>
+                                                    <Col>Value</Col>
                                                 </Row>
                                                 {taxSplits.map((item, index)=>(
                                                     <Row key={index}>
@@ -276,14 +294,9 @@ const Tax = () => {
                                 </Fade>
                             </Col>
                             <Col md={2}>
-                                {income.toString().length>0 && !showFirstScreen &&
-                                    <div className="nav-button bottom left">
-                                        {navigationButton(faArrowLeft)}
-                                    </div>
-                                }
-                                {income.toString().length>0 && showFirstScreen &&
-                                    <div className="nav-button bottom right">
-                                        {navigationButton(faArrowRight)}
+                                {income.toString().length>0 &&
+                                    <div className={`nav-button bottom ${!showFirstScreen ? 'left' : 'right'}`}>
+                                        {navigationButton(!showFirstScreen ? faArrowLeft : faArrowRight)}
                                     </div>
                                 }
                             </Col>

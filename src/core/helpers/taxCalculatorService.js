@@ -3,14 +3,15 @@ export function breakdownIncome(schema, income, allowance) {
 
     if( income/schema.highIncomeMaxLimit > 1 ) {
         splits[0] = income - schema.highIncomeMaxLimit;
-        splits[1] = schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit;
-        splits[2] = schema.basicIncomeMaxLimit - allowance;
+        splits[1] = schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit + schema.allowance;
+        splits[2] = schema.basicIncomeMaxLimit - schema.allowance;
     }else{
         if( income/schema.basicIncomeMaxLimit > 1 ) {
-            splits[0] = income - schema.basicIncomeMaxLimit;
             if( income/schema.allowanceLimit > 1 ) {
-                splits[1] = schema.basicIncomeMaxLimit - allowance;
+                splits[0] = income - schema.basicIncomeMaxLimit + schema.allowance - allowance;
+                splits[1] = schema.basicIncomeMaxLimit - schema.allowance;
             }else{
+                splits[0] = income - schema.basicIncomeMaxLimit;
                 splits[1] = schema.basicIncomeMaxLimit - schema.allowance;
             }
         }else{
@@ -38,7 +39,7 @@ export function calculateTax(schema, income) {
     if( income > schema.allowanceLimit) {
         const diff = income - schema.allowanceLimit;
         if( diff >= 2*allowance ) allowance = 0;
-        else allowance = allowance - diff/2;
+        else allowance = schema.allowance - diff/2;
     }
 
     getSplits = breakdownIncome(schema, income, allowance);
@@ -49,22 +50,20 @@ export function calculateTax(schema, income) {
         taxes = taxSplits.reduce((accumulator, currentValue) => accumulator + currentValue); // sum up all these taxes to get the total
     }
 
-    // calculate remaining income after applying taxes
-    output = income - taxes - schema.allowance + allowance;
-
     // calculate insurance tax
-    if( output >= 12*schema.insurance.lowLimit ) {
-        if( output <= 12*schema.insurance.highLimit ) {
-            insuranceTax = schema.insurance.lowRate/100 * output;
+    if( income > schema.insurance.lowLimit ) {
+        if( income <= schema.insurance.highLimit ) {
+            insuranceTax = schema.insurance.lowRate/100 * ( income - schema.insurance.lowLimit );
         }else{
-            insuranceTax = schema.insurance.highRate/100 * output;
+            insuranceTax = schema.insurance.lowRate/100 * ( schema.insurance.highLimit - schema.insurance.lowLimit ) +
+                            schema.insurance.highRate/100 * ( income - schema.insurance.highLimit );
         }
     }else{
         insuranceTax = 0;
     }
 
     // calculate final income after applying insurance tax
-    output = output - insuranceTax;
+    output = income - taxes - insuranceTax;
 
     if( getSplits.length === 0 ) {
         getSplits[0] = income;
@@ -75,6 +74,7 @@ export function calculateTax(schema, income) {
         taxes: taxes,
         insuranceTax: insuranceTax,
         output: output,
+        initialAllowance: schema.allowance,
         allowance: allowance,
         taxSplits: taxSplits.map((item, index)=>(
             {
