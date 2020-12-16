@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 import {Container, Card, Row, Col, Form, Button, InputGroup} from "react-bootstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import NumberFormat from 'react-number-format';
+import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
+import {calculateTax} from "../../core/helpers/taxCalculatorService";
 import "./tax.scss";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {NavIcon} from "@trendmicro/react-sidenav";
 
 const Tax = () => {
 
@@ -13,6 +14,7 @@ const Tax = () => {
     const [incomeTaxes, setIncomeTaxes] = useState("");
     const [insuranceTaxes, setInsuranceTaxes] = useState("");
     const [userData, setUserData] = useState({amount: "", year: ""});
+    const [showModal, setShowModal] = useState(false);
     const schemaCollection = [
         {
             id: "19-20",
@@ -73,77 +75,6 @@ const Tax = () => {
             value: allowance
         }
     ];
-    
-    const breakdownIncome = (schema, income, allowance) => {
-        let splits = [];
-
-        if( income/schema.highIncomeMaxLimit > 1 ) {
-            splits[0] = income - schema.highIncomeMaxLimit;
-            splits[1] = schema.highIncomeMaxLimit - schema.basicIncomeMaxLimit;
-            splits[2] = schema.basicIncomeMaxLimit - allowance;
-        }else{
-            if( income/schema.basicIncomeMaxLimit > 1 ) {
-                splits[0] = income - schema.basicIncomeMaxLimit;
-                if( income/schema.allowanceLimit > 1 ) {
-                    splits[1] = schema.basicIncomeMaxLimit - allowance;
-                }else{
-                    splits[1] = schema.basicIncomeMaxLimit - schema.allowance;
-                }
-            }else{
-                if( income/schema.allowance > 1 ) {
-                    splits[0] = income - schema.allowance;
-                }else{
-                    splits = [];
-                }
-            }
-        }
-        splits = splits.reverse();
-
-        return splits
-    };
-
-    const calculateTax = (schema, income) => {
-        let output,
-            allowance = schema.allowance,
-            insuranceTax = 0,
-            taxes = 0,
-            getSplits;
-
-        // calculate the allowance upon which I will set afterwards the income breakdown splits
-        if( income > schema.allowanceLimit) {
-            const diff = income - schema.allowanceLimit;
-            if( diff >= 2*allowance ) allowance = 0;
-            else allowance = allowance - diff/2;
-        }
-
-        getSplits = breakdownIncome(schema, income, allowance);
-
-        // calculate the sum of all taxes applied on the income
-        if( getSplits.length > 0 ) {
-            taxes = getSplits
-                .map((item, index) => schema.rates[index] / 100 * item) // get an array of tax values applied differently on each of the income breakdown
-                .reduce((accumulator, currentValue) => accumulator + currentValue); // sum up all these taxes to get the total
-        }
-
-        // calculate remaining income after applying taxes
-        output = income - taxes - schema.allowance + allowance;
-
-        // calculate insurance tax
-        if( output >= 12*schema.insurance.lowLimit ) {
-            if( output <= 12*schema.insurance.highLimit ) {
-                insuranceTax = schema.insurance.lowRate/100 * output;
-            }else{
-                insuranceTax = schema.insurance.highRate/100 * output;
-            }
-        }else{
-            insuranceTax = 0;
-        }
-
-        // calculate final income after applying insurance tax
-        output = output - insuranceTax;
-
-        return [taxes, insuranceTax, output, allowance]
-    };
 
     return(<div className="tax-page-container">
         <section className="content">
@@ -212,15 +143,18 @@ const Tax = () => {
                                     </Form.Group>
                                     <Button
                                         className="button-calculate btn btn-primary btn-block shadow-none"
-                                        disabled={Number(userData.amount) === 0 || userData.year.length !== 5}
                                         onClick={(e) => {
-                                            const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
-                                            const calculate = calculateTax(schema[0], userData.amount);
-                                            setIncomeTaxes(calculate[0]);
-                                            setInsuranceTaxes(calculate[1]);
-                                            setIncome(calculate[2]);
-                                            setAllowance(calculate[3]);
-                                            e.currentTarget.parentElement.querySelector('.button-calculate').blur();
+                                            if( Number(userData.amount) === 0 || userData.year.length !== 5 ) {
+                                                setShowModal(true);
+                                            }else{
+                                                const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
+                                                const calculate = calculateTax(schema[0], userData.amount);
+                                                setIncomeTaxes(calculate[0]);
+                                                setInsuranceTaxes(calculate[1]);
+                                                setIncome(calculate[2]);
+                                                setAllowance(calculate[3]);
+                                                e.currentTarget.parentElement.querySelector('.button-calculate').blur();
+                                            }
                                         }
                                         }
                                     >
@@ -267,6 +201,12 @@ const Tax = () => {
                 </Card>
             </Container>
         </section>
+        <ViewItemModal
+            index="0"
+            data={{content: "Please remember to provide values for both fields"}}
+            show={showModal}
+            onHide={() => setShowModal(false)}
+        />
     </div>)
 };
 

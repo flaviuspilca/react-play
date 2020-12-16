@@ -18,7 +18,7 @@ const ViewItemModal = (props) => {
             </Modal.Header>
             <Modal.Body>
                 <p>{props.data.content}</p>
-                <span className="text-left font-italic">by: {props.data.author ? props.data.author : "unknown author"}</span>
+                {props.data.author && <span className="text-left font-italic">by: {props.data.author}</span>}
             </Modal.Body>
             <Modal.Footer>
                 <Button size={"sm"} onClick={props.onHide}>Close</Button>
