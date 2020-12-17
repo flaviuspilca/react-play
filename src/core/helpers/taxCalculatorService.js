@@ -30,7 +30,7 @@ export function breakdownIncome(schema, income, allowance) {
 export function calculateTax(schema, income) {
     let output,
         allowance = schema.allowance,
-        insuranceTax = [],
+        insuranceTaxes = [],
         taxes = 0,
         getSplits,
         taxSplits = [];
@@ -53,13 +53,13 @@ export function calculateTax(schema, income) {
     // calculate insurance tax
     if( income > schema.insurance.lowLimit ) {
         if( income <= schema.insurance.highLimit ) {
-            insuranceTax = [{
+            insuranceTaxes = [{
                 amount: income - schema.insurance.lowLimit,
                 rate: schema.insurance.lowRate,
                 value: schema.insurance.lowRate/100 * ( income - schema.insurance.lowLimit )
             }];
         }else{
-            insuranceTax = [{
+            insuranceTaxes = [{
                 amount: schema.insurance.highLimit - schema.insurance.lowLimit,
                 rate: schema.insurance.lowRate,
                 value: schema.insurance.lowRate/100 * ( schema.insurance.highLimit - schema.insurance.lowLimit )
@@ -71,7 +71,7 @@ export function calculateTax(schema, income) {
             }]
         }
     }else{
-        insuranceTax = [{
+        insuranceTaxes = [{
             amount: income,
             rate: 0,
             value: 0
@@ -79,7 +79,7 @@ export function calculateTax(schema, income) {
     }
 
     // calculate final income after applying insurance tax
-    output = income - taxes - insuranceTax.map((item)=>(item.value)).reduce((accumulator, currentValue) => accumulator + currentValue);
+    output = income - taxes - insuranceTaxes.map((item)=>(item.value)).reduce((accumulator, currentValue) => accumulator + currentValue);
 
     if( getSplits.length === 0 ) {
         getSplits[0] = income;
@@ -88,17 +88,17 @@ export function calculateTax(schema, income) {
 
     return {
         taxes: taxes,
-        insuranceTax: insuranceTax.map((item)=>(item.value)).reduce((accumulator, currentValue) => accumulator + currentValue),
-        output: output,
+        insuranceTaxes: insuranceTaxes.map((item)=>(item.value)).reduce((accumulator, currentValue) => accumulator + currentValue),
+        income: output,
         initialAllowance: schema.allowance,
         allowance: allowance,
-        insuranceSplits: insuranceTax,
         taxSplits: taxSplits.map((item, index)=>(
             {
                 amount: getSplits[index],
                 rate: getSplits[index] <= schema.allowance ? 0 : schema.rates[index],
                 value: item
             }
-        ))
+        )),
+        insuranceSplits: insuranceTaxes
     }
 }

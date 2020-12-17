@@ -5,63 +5,35 @@ import {faArrowRight, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import NumberFormat from 'react-number-format';
 import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
 import {calculateTax} from "../../core/helpers/taxCalculatorService";
+import {schemaCollection} from "../../core/taxModel";
 import "./tax.scss";
 
 const Tax = () => {
 
-    const [income, setIncome] = useState("");
-    const [allowance, setAllowance] = useState("");
-    const [incomeTaxes, setIncomeTaxes] = useState("");
-    const [insuranceTaxes, setInsuranceTaxes] = useState("");
+    const [calculatedData, setCalculatedData] = useState({
+        taxes: "",
+        insuranceTaxes: "",
+        income: "",
+        initialAllowance: "",
+        allowance: "",
+        taxSplits: [],
+        insuranceSplits: ""
+    });
     const [userData, setUserData] = useState({amount: "", year: ""});
-    const [taxSplits, setTaxSplits] = useState([]);
-    const [insuranceSplits, setInsuranceSplits] = useState([]);
-    const [initialAllowance, setInitialAllowance] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [showFirstScreen, setShowFirstScreen] = useState(true);
-    const schemaCollection = [
-        {
-            id: "19-20",
-            allowance: 12500,
-            basicIncomeMaxLimit: 50000,
-            highIncomeMaxLimit: 150000,
-            rates: [20, 40, 45],
-            allowanceLimit: 100000,
-            insurance: {
-                lowLimit: 12*719,
-                lowRate: 12,
-                highLimit: 12*4167,
-                highRate: 2
-            }
-        },
-        {
-            id: "20-21",
-            allowance: 12500,
-            basicIncomeMaxLimit: 50000,
-            highIncomeMaxLimit: 150000,
-            rates: [20, 40, 45],
-            allowanceLimit: 100000,
-            insurance: {
-                lowLimit: 12*792,
-                lowRate: 12,
-                highLimit: 12*4167,
-                highRate: 2
-            }
-        }
-    ];
     const currency = {
         pound: "£"
     };
-
     const displayConfig = [
         {
             label: "Taxes per year",
-            value: incomeTaxes,
+            value: calculatedData.taxes,
             customClass: ""
         },
         {
             label: "Insurance taxes per year",
-            value: insuranceTaxes,
+            value: calculatedData.insuranceTaxes,
             customClass: ""
         },
         {
@@ -71,30 +43,28 @@ const Tax = () => {
         },
         {
             label: "Net income per month",
-            value: income/12,
+            value: calculatedData.income/12,
             customClass: "income-per-month"
         },
         {
             label: "Net income per year",
-            value: income,
+            value: calculatedData.income,
             customClass: ""
         },
         {
             label: "Personal allowance",
-            value: allowance,
+            value: calculatedData.allowance,
             customClass: ""
         }
     ];
-    let calculatedData = {};
 
     const navigationButton = (direction) => (
         <Card className="nav-button-card">
             <Button variant="btn-primary btn-circle btn-lg"
                     onClick={(e)=>{
-                            setShowFirstScreen(!showFirstScreen);
-                            e.currentTarget.parentElement.querySelector('.btn-circle').blur();
-                    }
-                    }
+                        setShowFirstScreen(!showFirstScreen);
+                        e.currentTarget.parentElement.querySelector('.btn-circle').blur();
+                    }}
             >
                 <h3>{showFirstScreen ? "Click to see details" : "Back to main screen"}</h3>
                 <FontAwesomeIcon className="nav-button-arrow" style={{color: '#566573'}} icon={direction} />
@@ -116,7 +86,7 @@ const Tax = () => {
                     <Card.Body className="d-flex flex-column">
                         <Row>
                             <Col md={2}>
-                                {income.toString().length>0 && !showFirstScreen &&
+                                {calculatedData.income.toString().length>0 && !showFirstScreen &&
                                     <div className="nav-button top">
                                         {navigationButton(faArrowLeft)}
                                     </div>
@@ -142,7 +112,7 @@ const Tax = () => {
                                                             if( string.length > 10 ) {
                                                                 e.currentTarget.value = string.substring(0,10);
                                                             }
-                                                            setIncome("");
+                                                            setCalculatedData({income: ""});
                                                             setUserData({
                                                                 amount: e.currentTarget.value,
                                                                 year: userData.year
@@ -160,7 +130,7 @@ const Tax = () => {
                                                     as="select"
                                                     className="shadow-none"
                                                     onChange={(e)=>{
-                                                        setIncome("");
+                                                        setCalculatedData({income: ""});
                                                         setUserData({
                                                             amount: userData.amount,
                                                             year: e.currentTarget.value
@@ -179,25 +149,17 @@ const Tax = () => {
                                                     if( Number(userData.amount) === 0 || userData.year.length !== 5 ) {
                                                         setShowModal(true);
                                                     }else{
-                                                        const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString()));
-                                                        calculatedData = calculateTax(schema[0], userData.amount);
-                                                        setIncomeTaxes(calculatedData.taxes);
-                                                        setInsuranceTaxes(calculatedData.insuranceTax);
-                                                        setIncome(calculatedData.output);
-                                                        setInitialAllowance(calculatedData.initialAllowance);
-                                                        setAllowance(calculatedData.allowance);
-                                                        setTaxSplits(calculatedData.taxSplits);
-                                                        setInsuranceSplits(calculatedData.insuranceSplits);
+                                                        const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString())); // get the configuration object based on which we'll do the calculations
+                                                        setCalculatedData(calculateTax(schema[0], userData.amount)); // set the display configuration object with the calculated data
                                                         e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                     }
-                                                }
-                                                }
+                                                }}
                                             >
                                                 <h3>Calculate</h3>
                                             </Button>
                                         </Form>
                                         <div className="income-result text-center">
-                                            {income.toString().length>0 && <Card>
+                                            {calculatedData.income.toString().length>0 && <Card>
                                                 {
                                                     displayConfig.map((item, index)=>(
                                                         <Row key={index} className={item.customClass}>
@@ -224,7 +186,7 @@ const Tax = () => {
                                 <Fade in={!showFirstScreen}>
                                     <div className={showFirstScreen ? "second-screen" : ""}>
                                         <div className="income-result text-center">
-                                            {income.toString().length>0 && <Card>
+                                            {calculatedData.income.toString().length>0 && <Card>
                                                 <Row className="details-item">
                                                     <Col md={12}>
                                                         Below you can see the calculation scheme applied on your income
@@ -249,12 +211,12 @@ const Tax = () => {
                                                     </Col>
                                                     <Col md={6}>
                                                         <NumberFormat
-                                                            value={Number(initialAllowance).toFixed(2)}
+                                                            value={Number(calculatedData.initialAllowance).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
                                                         /> reduced to <NumberFormat
-                                                            value={Number(allowance).toFixed(2)}
+                                                            value={Number(calculatedData.allowance).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
@@ -271,7 +233,7 @@ const Tax = () => {
                                                     <Col>Rate</Col>
                                                     <Col>Value</Col>
                                                 </Row>
-                                                {taxSplits.map((item, index)=>(
+                                                {calculatedData.taxSplits.map((item, index)=>(
                                                     <Row key={index}>
                                                         <Col>
                                                             <NumberFormat
@@ -302,7 +264,7 @@ const Tax = () => {
                                                     <Col>Rate</Col>
                                                     <Col>Value</Col>
                                                 </Row>
-                                                {insuranceSplits.map((item, index)=>(
+                                                {calculatedData.insuranceSplits.map((item, index)=>(
                                                     <Row key={index}>
                                                         <Col>
                                                             <NumberFormat
@@ -325,13 +287,47 @@ const Tax = () => {
                                                 ))}
                                                 <Row className="details-item">
                                                     <Col md={12}>
-                                                        Resulting the below net income per month
+                                                        Resulting the below net income values
                                                     </Col>
                                                 </Row>
                                                 <Row>
-                                                    <Col md={12}>
+                                                    <Col md={6}>Yearly</Col>
+                                                    <Col md={6}>
                                                         <strong><NumberFormat
-                                                            value={Number(income/12).toFixed(2)}
+                                                            value={Number(calculatedData.income).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        /></strong>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col md={6}>Monthly</Col>
+                                                    <Col md={6}>
+                                                        <strong><NumberFormat
+                                                            value={Number(calculatedData.income/12).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        /></strong>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col md={6}>Weekly</Col>
+                                                    <Col md={6}>
+                                                        <strong><NumberFormat
+                                                            value={Number(calculatedData.income/52).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        /></strong>
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col md={6}>Daily</Col>
+                                                    <Col md={6}>
+                                                        <strong><NumberFormat
+                                                            value={Number(calculatedData.income/261).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
@@ -344,7 +340,7 @@ const Tax = () => {
                                 </Fade>
                             </Col>
                             <Col md={2}>
-                                {income.toString().length>0 &&
+                                {calculatedData.income.toString().length>0 &&
                                     <div className={`nav-button bottom ${!showFirstScreen ? 'left' : 'right'}`}>
                                         {navigationButton(!showFirstScreen ? faArrowLeft : faArrowRight)}
                                     </div>
