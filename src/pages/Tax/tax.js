@@ -194,7 +194,7 @@ const Tax = () => {
                                                 </Row>
                                                 <Row>
                                                     <Col md={6}>
-                                                        Gross salary:
+                                                        Gross salary per year:
                                                     </Col>
                                                     <Col md={6}>
                                                         <NumberFormat
@@ -229,9 +229,9 @@ const Tax = () => {
                                                     </Col>
                                                 </Row>
                                                 <Row>
-                                                    <Col>Amount</Col>
+                                                    <Col>Amount/year</Col>
                                                     <Col>Rate</Col>
-                                                    <Col>Value</Col>
+                                                    <Col>Value/year</Col>
                                                 </Row>
                                                 {calculatedData.taxSplits.map((item, index)=>(
                                                     <Row key={index}>
@@ -260,9 +260,9 @@ const Tax = () => {
                                                     </Col>
                                                 </Row>
                                                 <Row>
-                                                    <Col>Amount</Col>
+                                                    <Col>Amount/year</Col>
                                                     <Col>Rate</Col>
-                                                    <Col>Value</Col>
+                                                    <Col>Value/year</Col>
                                                 </Row>
                                                 {calculatedData.insuranceSplits.map((item, index)=>(
                                                     <Row key={index}>
