@@ -96,7 +96,7 @@ const Tax = () => {
                     }
                     }
             >
-                <h3>{showFirstScreen ? "Click to see details" : "Go back to main screen"}</h3>
+                <h3>{showFirstScreen ? "Click to see details" : "Back to main screen"}</h3>
                 <FontAwesomeIcon className="nav-button-arrow" style={{color: '#566573'}} icon={direction} />
             </Button>
         </Card>
