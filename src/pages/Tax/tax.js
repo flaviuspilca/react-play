@@ -297,6 +297,11 @@ const Tax = () => {
                                                         The calculation of the National Insurance is made by the below breakpoints
                                                     </Col>
                                                 </Row>
+                                                <Row>
+                                                    <Col>Amount</Col>
+                                                    <Col>Rate</Col>
+                                                    <Col>Value</Col>
+                                                </Row>
                                                 {insuranceSplits.map((item, index)=>(
                                                     <Row key={index}>
                                                         <Col>
