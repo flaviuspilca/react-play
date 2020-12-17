@@ -15,6 +15,7 @@ const Tax = () => {
     const [insuranceTaxes, setInsuranceTaxes] = useState("");
     const [userData, setUserData] = useState({amount: "", year: ""});
     const [taxSplits, setTaxSplits] = useState([]);
+    const [insuranceSplits, setInsuranceSplits] = useState([]);
     const [initialAllowance, setInitialAllowance] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [showFirstScreen, setShowFirstScreen] = useState(true);
@@ -186,6 +187,7 @@ const Tax = () => {
                                                         setInitialAllowance(calculatedData.initialAllowance);
                                                         setAllowance(calculatedData.allowance);
                                                         setTaxSplits(calculatedData.taxSplits);
+                                                        setInsuranceSplits(calculatedData.insuranceSplits);
                                                         e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                     }
                                                 }
@@ -260,7 +262,9 @@ const Tax = () => {
                                                     </Col>
                                                 </Row>
                                                 <Row className="details-item">
-                                                    Based on the existing laws, your gross income will be split into the following intervals. A different tax rate will then be applied on each interval.
+                                                    <Col md={12}>
+                                                        Based on the existing laws, your gross income will be split into the following intervals. A different tax rate will then be applied on each interval
+                                                    </Col>
                                                 </Row>
                                                 <Row>
                                                     <Col>Amount</Col>
@@ -288,6 +292,47 @@ const Tax = () => {
                                                         </Col>
                                                     </Row>
                                                 ))}
+                                                <Row className="details-item">
+                                                    <Col md={12}>
+                                                        The calculation of the National Insurance is made by the below breakpoints
+                                                    </Col>
+                                                </Row>
+                                                {insuranceSplits.map((item, index)=>(
+                                                    <Row key={index}>
+                                                        <Col>
+                                                            <NumberFormat
+                                                                value={Number(item.amount).toFixed(2)}
+                                                                displayType={'text'}
+                                                                thousandSeparator={true}
+                                                                prefix={currency.pound}
+                                                            />
+                                                        </Col>
+                                                        <Col>{item.rate}%</Col>
+                                                        <Col>
+                                                            <NumberFormat
+                                                                value={Number(item.value).toFixed(2)}
+                                                                displayType={'text'}
+                                                                thousandSeparator={true}
+                                                                prefix={currency.pound}
+                                                            />
+                                                        </Col>
+                                                    </Row>
+                                                ))}
+                                                <Row className="details-item">
+                                                    <Col md={12}>
+                                                        Resulting the below net income per month
+                                                    </Col>
+                                                </Row>
+                                                <Row>
+                                                    <Col md={12}>
+                                                        <strong><NumberFormat
+                                                            value={Number(income).toFixed(2)}
+                                                            displayType={'text'}
+                                                            thousandSeparator={true}
+                                                            prefix={currency.pound}
+                                                        /></strong>
+                                                    </Col>
+                                                </Row>
                                             </Card>}
                                         </div>
                                     </div>
