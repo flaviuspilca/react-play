@@ -326,7 +326,7 @@ const Tax = () => {
                                                 <Row>
                                                     <Col md={12}>
                                                         <strong><NumberFormat
-                                                            value={Number(income).toFixed(2)}
+                                                            value={Number(income/12).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
