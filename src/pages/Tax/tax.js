@@ -215,12 +215,13 @@ const Tax = () => {
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
-                                                        /> reduced to <NumberFormat
+                                                        /> { calculatedData.initialAllowance > calculatedData.allowance ? "reduced to " : "" }
+                                                        {calculatedData.initialAllowance > calculatedData.allowance && <NumberFormat
                                                             value={Number(calculatedData.allowance).toFixed(2)}
                                                             displayType={'text'}
                                                             thousandSeparator={true}
                                                             prefix={currency.pound}
-                                                        />
+                                                        />}
                                                     </Col>
                                                 </Row>
                                                 <Row className="details-item">
