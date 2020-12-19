@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import NumberFormat from 'react-number-format';
 import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
-import {calculateTax, formatIncome} from "../../core/helpers/taxCalculatorService";
+import {calculateTax, formatIncomeValue} from "../../core/helpers/taxCalculatorService";
 import {schemaCollection} from "../../core/taxModel";
 import "./tax.scss";
 
@@ -38,7 +38,11 @@ const Tax = () => {
         },
         {
             label: "Gross income per month",
-            value: userData.amount/12,
+            value: formatIncomeValue({
+                value: userData.amount,
+                type: userData.buttonsData.type.value,
+                time: userData.buttonsData.time.value
+            })/12,
             customClass: ""
         },
         {
@@ -93,17 +97,18 @@ const Tax = () => {
         return (
             <Card className="d-flex flex-column configuration-button">
                 {buttons && <ButtonGroup toggle>
-                    {buttons.map((button, idx) => (
+                    {buttons.map((button, index) => (
                         <ToggleButton
-                            key={idx}
+                            key={index}
                             type="radio"
-                            variant="outline-secondary"
+                            className="radio-button"
                             name="radio"
                             size="sm"
                             value={button.value}
                             checked={btnVal === button.value}
                             onChange={(e) => {
                                 setBtnVal(e.currentTarget.value);
+                                setCalculatedData({income: ""});
                                 setUserData({
                                     amount: userData.amount,
                                     year: userData.year,
@@ -209,18 +214,19 @@ const Tax = () => {
                                             <Button
                                                 className="button-calculate btn btn-primary btn-block shadow-none"
                                                 onClick={(e) => {
-                                                    if( Number(userData.amount) === 0 || userData.year.length !== 5 ) {
+                                                    if( Number(userData.amount) === 0 ||
+                                                        userData.year.length !== 5 ||
+                                                        Object.keys(userData.buttonsData).filter((key) => userData.buttonsData[key].value === "").length > 0) {
                                                         setShowModal(true);
                                                     }else{
-                                                        formatIncome({
+                                                        const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString())); // get the configuration object based on which we'll do the calculations
+                                                        setCalculatedData(calculateTax(schema[0], formatIncomeValue({
                                                             value: userData.amount,
                                                             type: userData.buttonsData.type.value,
                                                             time: userData.buttonsData.time.value
-                                                        });
-                                                        const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString())); // get the configuration object based on which we'll do the calculations
-                                                        setCalculatedData(calculateTax(schema[0], userData.amount)); // set the display configuration object with the calculated data
-                                                        e.currentTarget.parentElement.querySelector('.button-calculate').blur();
+                                                        }))); // set the display configuration object with the calculated data
                                                     }
+                                                    e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                 }}
                                             >
                                                 <h3>Calculate</h3>

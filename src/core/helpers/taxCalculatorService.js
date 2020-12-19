@@ -27,8 +27,15 @@ export function breakdownIncome(schema, income, allowance) {
     return splits
 }
 
-export function formatIncome (config) {
-console.log(config)
+export function formatIncomeValue (config) {
+    let result;
+
+    if( config.time.toString() === "1" ) result = config.value;
+    if( config.time.toString() === "2" ) result = config.value*12;
+    if( config.time.toString() === "3" ) result = config.value*52;
+    if( config.time.toString() === "4" ) result = config.value*261;
+
+    return result;
 }
 
 export function calculateTax(schema, income) {

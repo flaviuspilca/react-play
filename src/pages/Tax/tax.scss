@@ -9,7 +9,7 @@
 
   .button-calculate, .button-calculate:hover {
     background-color: #D98880;
-    border: none;
+    border: 1px solid #CD6155;
     color: #000;
 
     h3 {
@@ -97,6 +97,18 @@
     box-shadow: none !important;
     border: none;
     margin-bottom: 10px;
+
+    .radio-button {
+      background: #D98880;
+      border: 1px solid #CD6155;
+      color: #000;
+    }
+
+    .btn-primary.active {
+      background: #CD6155;
+      border: 1px solid #CD6155;
+      color: #000;
+    }
   }
 
 
