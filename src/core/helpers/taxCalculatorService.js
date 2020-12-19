@@ -124,13 +124,6 @@ export function getGross(schema, income) {
         output = income;
     }
 
-    return {
-        taxes: "-",
-        insuranceTaxes: "-",
-        income: output,
-        initialAllowance: "-",
-        allowance: "-",
-        taxSplits: [],
-        insuranceSplits: []
-    }
+
+    return getNet(schema, output);
 }
