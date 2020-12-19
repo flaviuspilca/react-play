@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import {Container, Card, Row, Col, Form, Button, InputGroup, Fade} from "react-bootstrap";
+import {Container, Card, Row, Col, Form, Button, InputGroup, Fade, ButtonGroup, ToggleButton} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import NumberFormat from 'react-number-format';
 import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
-import {calculateTax} from "../../core/helpers/taxCalculatorService";
+import {calculateTax, formatIncome} from "../../core/helpers/taxCalculatorService";
 import {schemaCollection} from "../../core/taxModel";
 import "./tax.scss";
 
@@ -19,13 +19,13 @@ const Tax = () => {
         taxSplits: [],
         insuranceSplits: ""
     });
-    const [userData, setUserData] = useState({amount: "", year: ""});
+    const [userData, setUserData] = useState({amount: "", year: "", buttonsData : {type: { value: "" }, time: { value : "" }}});
     const [showModal, setShowModal] = useState(false);
     const [showFirstScreen, setShowFirstScreen] = useState(true);
     const currency = {
         pound: "£"
     };
-    const displayConfig = [
+    const displayResultsConfig = [
         {
             label: "Taxes per year",
             value: calculatedData.taxes,
@@ -57,8 +57,21 @@ const Tax = () => {
             customClass: ""
         }
     ];
+    const breakdownButtons = {
+        timeBreakdown: [
+            { name: 'Yearly', value: '1' },
+            { name: 'Monthly', value: '2' },
+            { name: 'Weekly', value: '3' },
+            { name: 'Daily', value: '4' }
+        ],
+        typeBreakdown: [
+            { name: 'Net', value: '1' },
+            { name: 'Gross', value: '2' }
+        ]
+    };
 
-    const navigationButton = (direction) => (
+
+    const NavigationButton = (direction) => (
         <Card className="nav-button-card">
             <Button variant="btn-primary btn-circle btn-lg"
                     onClick={(e)=>{
@@ -71,6 +84,44 @@ const Tax = () => {
             </Button>
         </Card>
     );
+
+    const ConfigurationButtons = (props) => {
+        const buttons = props.buttons;
+        const field = props.field;
+        const [btnVal, setBtnVal] = useState(userData.buttonsData[field].value);
+
+        return (
+            <Card className="d-flex flex-column configuration-button">
+                {buttons && <ButtonGroup toggle>
+                    {buttons.map((button, idx) => (
+                        <ToggleButton
+                            key={idx}
+                            type="radio"
+                            variant="outline-secondary"
+                            name="radio"
+                            size="sm"
+                            value={button.value}
+                            checked={btnVal === button.value}
+                            onChange={(e) => {
+                                setBtnVal(e.currentTarget.value);
+                                setUserData({
+                                    amount: userData.amount,
+                                    year: userData.year,
+                                    buttonsData: {
+                                        type: { value: field === "type" ? e.currentTarget.value : userData.buttonsData.type.value },
+                                        time: { value : field === "time" ? e.currentTarget.value : userData.buttonsData.time.value }
+                                    }
+                                });
+                            }}
+                        >
+                            {button.name}
+                        </ToggleButton>
+                    ))}
+                </ButtonGroup>
+                }
+            </Card>
+        )
+    };
 
     return(<div className="tax-page-container">
         <section className="content">
@@ -88,7 +139,7 @@ const Tax = () => {
                             <Col md={2}>
                                 {calculatedData.income.toString().length>0 && !showFirstScreen &&
                                     <div className="nav-button top">
-                                        {navigationButton(faArrowLeft)}
+                                        {NavigationButton(faArrowLeft)}
                                     </div>
                                 }
                             </Col>
@@ -115,7 +166,11 @@ const Tax = () => {
                                                             setCalculatedData({income: ""});
                                                             setUserData({
                                                                 amount: e.currentTarget.value,
-                                                                year: userData.year
+                                                                year: userData.year,
+                                                                buttonsData: {
+                                                                    type: { value: userData.buttonsData.type.value },
+                                                                    time: { value : userData.buttonsData.time.value }
+                                                                }
                                                             })
                                                         }
                                                         }
@@ -125,6 +180,10 @@ const Tax = () => {
                                                     </InputGroup.Append>
                                                 </InputGroup>
                                             </Form.Group>
+                                            <Form.Group className="breakdown-buttons">
+                                                <ConfigurationButtons buttons={breakdownButtons.typeBreakdown} field={"type"}/>
+                                                <ConfigurationButtons buttons={breakdownButtons.timeBreakdown} field={"time"}/>
+                                            </Form.Group>
                                             <Form.Group controlId="yearField">
                                                 <Form.Control
                                                     as="select"
@@ -133,7 +192,11 @@ const Tax = () => {
                                                         setCalculatedData({income: ""});
                                                         setUserData({
                                                             amount: userData.amount,
-                                                            year: e.currentTarget.value
+                                                            year: e.currentTarget.value,
+                                                            buttonsData: {
+                                                                type: { value: userData.buttonsData.type.value },
+                                                                time: { value : userData.buttonsData.time.value }
+                                                            }
                                                         })
                                                     }
                                                     }
@@ -149,6 +212,11 @@ const Tax = () => {
                                                     if( Number(userData.amount) === 0 || userData.year.length !== 5 ) {
                                                         setShowModal(true);
                                                     }else{
+                                                        formatIncome({
+                                                            value: userData.amount,
+                                                            type: userData.buttonsData.type.value,
+                                                            time: userData.buttonsData.time.value
+                                                        });
                                                         const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString())); // get the configuration object based on which we'll do the calculations
                                                         setCalculatedData(calculateTax(schema[0], userData.amount)); // set the display configuration object with the calculated data
                                                         e.currentTarget.parentElement.querySelector('.button-calculate').blur();
@@ -161,7 +229,7 @@ const Tax = () => {
                                         <div className="income-result text-center">
                                             {calculatedData.income.toString().length>0 && <Card>
                                                 {
-                                                    displayConfig.map((item, index)=>(
+                                                    displayResultsConfig.map((item, index)=>(
                                                         <Row key={index} className={item.customClass}>
                                                             <Col md={6}>
                                                                 <h6><small>{item.label}</small></h6>
@@ -343,7 +411,7 @@ const Tax = () => {
                             <Col md={2}>
                                 {calculatedData.income.toString().length>0 &&
                                     <div className={`nav-button bottom ${!showFirstScreen ? 'left' : 'right'}`}>
-                                        {navigationButton(!showFirstScreen ? faArrowLeft : faArrowRight)}
+                                        {NavigationButton(!showFirstScreen ? faArrowLeft : faArrowRight)}
                                     </div>
                                 }
                             </Col>

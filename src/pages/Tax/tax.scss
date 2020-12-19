@@ -93,6 +93,13 @@
     background-color: #F2D7D5 !important;
   }
 
+  .breakdown-buttons .configuration-button{
+    box-shadow: none !important;
+    border: none;
+    margin-bottom: 10px;
+  }
+
+
   @media (min-width: 768px) {
     .nav-button {
       height: 100%;

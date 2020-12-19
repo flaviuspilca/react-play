@@ -27,6 +27,10 @@ export function breakdownIncome(schema, income, allowance) {
     return splits
 }
 
+export function formatIncome (config) {
+console.log(config)
+}
+
 export function calculateTax(schema, income) {
     let output,
         allowance = schema.allowance,
