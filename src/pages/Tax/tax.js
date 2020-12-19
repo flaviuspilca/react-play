@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight, faArrowLeft} from "@fortawesome/free-solid-svg-icons";
 import NumberFormat from 'react-number-format';
 import ViewItemModal from "../../components/ViewItemModal/ViewItemModal";
-import {calculateTax, formatIncomeValue} from "../../core/helpers/taxCalculatorService";
+import {getNet, getGross, formatIncomeValue} from "../../core/helpers/taxCalculatorService";
 import {schemaCollection} from "../../core/taxModel";
 import "./tax.scss";
 
@@ -38,17 +38,21 @@ const Tax = () => {
         },
         {
             label: "Gross income per month",
-            value: formatIncomeValue({
+            value: userData.buttonsData.type.value === "1" ? calculatedData.income/12 : formatIncomeValue({
                 value: userData.amount,
                 type: userData.buttonsData.type.value,
                 time: userData.buttonsData.time.value
             })/12,
-            customClass: ""
+            customClass: userData.buttonsData.type.value === "1" ? "income-per-month" : ""
         },
         {
             label: "Net income per month",
-            value: calculatedData.income/12,
-            customClass: "income-per-month"
+            value: userData.buttonsData.type.value === "2" ? calculatedData.income/12 : formatIncomeValue({
+                value: userData.amount,
+                type: userData.buttonsData.type.value,
+                time: userData.buttonsData.time.value
+            })/12,
+            customClass: userData.buttonsData.type.value === "2" ? "income-per-month" : ""
         },
         {
             label: "Net income per year",
@@ -220,11 +224,19 @@ const Tax = () => {
                                                         setShowModal(true);
                                                     }else{
                                                         const schema = schemaCollection.filter((item)=>(item.id.toString() === userData.year.toString())); // get the configuration object based on which we'll do the calculations
-                                                        setCalculatedData(calculateTax(schema[0], formatIncomeValue({
-                                                            value: userData.amount,
-                                                            type: userData.buttonsData.type.value,
-                                                            time: userData.buttonsData.time.value
-                                                        }))); // set the display configuration object with the calculated data
+                                                        if( userData.buttonsData.type.value === "1" ) {
+                                                            setCalculatedData(getGross(schema[0], formatIncomeValue({
+                                                                value: userData.amount,
+                                                                type: userData.buttonsData.type.value,
+                                                                time: userData.buttonsData.time.value
+                                                            })))
+                                                        }else{
+                                                            setCalculatedData(getNet(schema[0], formatIncomeValue({
+                                                                value: userData.amount,
+                                                                type: userData.buttonsData.type.value,
+                                                                time: userData.buttonsData.time.value
+                                                            }))) // set the display configuration object with the calculated data
+                                                        }
                                                     }
                                                     e.currentTarget.parentElement.querySelector('.button-calculate').blur();
                                                 }}

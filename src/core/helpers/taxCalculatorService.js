@@ -35,10 +35,10 @@ export function formatIncomeValue (config) {
     if( config.time.toString() === "3" ) result = config.value*52;
     if( config.time.toString() === "4" ) result = config.value*261;
 
-    return result;
+    return result; // income converted per year
 }
 
-export function calculateTax(schema, income) {
+export function getNet (schema, income) {
     let output,
         allowance = schema.allowance,
         insuranceTaxes = [],
@@ -111,5 +111,26 @@ export function calculateTax(schema, income) {
             }
         )),
         insuranceSplits: insuranceTaxes
+    }
+}
+
+export function getGross(schema, income) {
+    let output,
+        rates = [12,32,42,47];
+
+    if( income > schema.insurance.lowLimit ) {
+        output = (100*income-rates[0]*schema.insurance.lowLimit)/(100-rates[0]);
+    }else{
+        output = income;
+    }
+
+    return {
+        taxes: "-",
+        insuranceTaxes: "-",
+        income: output,
+        initialAllowance: "-",
+        allowance: "-",
+        taxSplits: [],
+        insuranceSplits: []
     }
 }
