@@ -44,8 +44,10 @@ export function getNet (schema, income) {
         insuranceTaxes = [],
         taxes = 0,
         getSplits,
-        taxSplits = [];
+        taxSplits = [],
+        gross;
 
+    gross = income;
     // calculate the allowance upon which I will set afterwards the income breakdown splits
     if( income > schema.allowanceLimit) {
         const diff = income - schema.allowanceLimit;
@@ -101,6 +103,7 @@ export function getNet (schema, income) {
         taxes: taxes,
         insuranceTaxes: insuranceTaxes.map((item)=>(item.value)).reduce((accumulator, currentValue) => accumulator + currentValue),
         income: output,
+        gross: gross,
         initialAllowance: schema.allowance,
         allowance: allowance,
         taxSplits: taxSplits.map((item, index)=>(
@@ -116,14 +119,23 @@ export function getNet (schema, income) {
 
 export function getGross(schema, income) {
     let output,
-        rates = [12,32,42,47];
-
+        diffs = [12,20,10,5],
+        amountBreakpoints = [schema.insurance.lowLimit, schema.allowance, schema.basicIncomeMaxLimit, schema.highIncomeMaxLimit];
+    
     if( income > schema.insurance.lowLimit ) {
-        output = (100*income-rates[0]*schema.insurance.lowLimit)/(100-rates[0]);
+        output = (100*income-diffs[0]*amountBreakpoints[0])/(100-diffs[0]);
+        if( output > amountBreakpoints[1]) {
+            output = (100*income-diffs[0]*amountBreakpoints[0]-diffs[1]*amountBreakpoints[1])/(100-diffs[0]-diffs[1]);
+            if( output > amountBreakpoints[2]) {
+                output = (100*income-diffs[0]*amountBreakpoints[0]-diffs[1]*amountBreakpoints[1]-diffs[2]*amountBreakpoints[2])/(100-diffs[0]-diffs[1]-diffs[2]);
+                if( output > amountBreakpoints[3]) {
+                    output = (100*income-diffs[0]*amountBreakpoints[0]-diffs[1]*amountBreakpoints[1]-diffs[2]*amountBreakpoints[2]-diffs[3]*amountBreakpoints[3])/(100-diffs[0]-diffs[1]-diffs[2]-diffs[3]);
+                }
+            }
+        }
     }else{
         output = income;
     }
-
 
     return getNet(schema, output);
 }

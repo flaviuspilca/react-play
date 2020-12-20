@@ -14,6 +14,7 @@ const Tax = () => {
         taxes: "",
         insuranceTaxes: "",
         income: "",
+        gross: "",
         initialAllowance: "",
         allowance: "",
         taxSplits: [],
@@ -38,7 +39,7 @@ const Tax = () => {
         },
         {
             label: "Gross income per month",
-            value: userData.buttonsData.type.value === "1" ? calculatedData.income/12 : formatIncomeValue({
+            value: userData.buttonsData.type.value === "1" ? calculatedData.gross/12 : formatIncomeValue({
                 value: userData.amount,
                 type: userData.buttonsData.type.value,
                 time: userData.buttonsData.time.value
